@@ -1,16 +1,16 @@
-package com.example.trippe.ui.home;
+package com.example.trippe.ui.trips;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class TripsViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public TripsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("This is Trips fragment");
     }
 
     public LiveData<String> getText() {
