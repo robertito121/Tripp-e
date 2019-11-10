@@ -23,13 +23,13 @@ public class CurrencyFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         currencyViewModel =
                 ViewModelProviders.of(this).get(CurrencyViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_currency, container, false);
+        final View root = inflater.inflate(R.layout.fragment_currency, container, false);
         final TextView textView = root.findViewById(R.id.text_notifications);
         currencyViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
-                //spinnerFromCurrency = (Spinner) findViewById(R.id.spinnerFromCurrency);
+                Spinner  dropFromCurrency = (Spinner) root.findViewById(R.id.dropFromCurrency);
             }
         });
         return root;
