@@ -33,11 +33,9 @@ public class CurrencyFragment extends Fragment {
         currencyViewModel =
                 ViewModelProviders.of(this).get(CurrencyViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_currency, container, false);
-        final TextView textView = root.findViewById(R.id.text_notifications);
         currencyViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
                 // find our FROM dropdown in the UI
                 Spinner  dropFromCurrency = (Spinner) root.findViewById(R.id.dropFromCurrency);
                 // find our TO dropdown in the UI
