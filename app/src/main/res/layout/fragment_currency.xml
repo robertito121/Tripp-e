@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/dropToCurrency"
         android:gravity="center_horizontal"
-        android:text="to amount"
+        android:text="to amount prints here"
         android:textSize="24sp" />
 
 
