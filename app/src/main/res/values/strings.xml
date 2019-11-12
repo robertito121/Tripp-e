@@ -3,4 +3,11 @@
     <string name="title_home">Trips</string>
     <string name="title_dashboard">Calendar</string>
     <string name="title_notifications">Currency</string>
+    <string-array name="currency_array">
+        <item></item>
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>RUB</item>
+    </string-array>
 </resources>
