@@ -54,7 +54,7 @@
         android:textSize="24sp" />
 
     <TextView
-        android:id="@+id/txtToCurrency"
+        android:id="@+id/txtResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnConvert"
@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:id="@+id/currencyGraph"
-        android:layout_below="@id/txtToCurrency" />
+        android:layout_below="@id/txtResult" />
 
 
 
