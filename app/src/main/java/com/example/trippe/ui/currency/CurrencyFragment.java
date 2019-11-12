@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.trippe.CurrencyQuery;
 import com.example.trippe.R;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -35,6 +36,8 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
 
     private CurrencyViewModel currencyViewModel;
     private View view; // need this as an inflated view to make using the fragment_currency.xml file easy
+    // need this within android fragments to pass the right context to stuff
+    private  Context context = getContext();
 
     @Override
     public void onClick(View v) {
@@ -50,7 +53,11 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
             String toCurrency;
             Float fromAmount;
 
-            int red = Color.rgb(252, 159, 159);
+            int red = Color.rgb(252, 159, 159); // set a local var for red error color
+            // instantiate a CurrencyQuery object
+            CurrencyQuery currencyQuery = new CurrencyQuery(getContext());
+
+
 
             try {
                 // retrieve the data from the ui elements
@@ -85,7 +92,7 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
                     txtResult.setText("");
                 } else {
                     //TODO WEB API REQUEST/DB QUERY
-                    txtFromAmount.setTextColor(Color.WHITE); // reset our text color in case it was changed due to errors
+                    txtFromAmount.setBackgroundColor(Color.WHITE); // reset our text color in case it was changed due to errors
                     txtResult.setText("Success!");
                 }
             } catch (Exception e) {
@@ -104,9 +111,6 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
                              ViewGroup container, Bundle savedInstanceState) {
         currencyViewModel = ViewModelProviders.of(this).get(CurrencyViewModel.class);
         view = inflater.inflate(R.layout.fragment_currency, container, false);
-
-        // need this within android fragments to pass the right context to stuff
-        Context context = getContext();
 
         // find our FROM dropdown in the UI
         Spinner dropFromCurrency = (Spinner) view.findViewById(R.id.dropFromCurrency); // not sure why this cant resolve now, it works at runtime
@@ -135,7 +139,7 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
         }
 
         // Creating adapter for spinner
-        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, options);
+        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, options);
 
         // Drop down layout style - makes it look pretty
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
