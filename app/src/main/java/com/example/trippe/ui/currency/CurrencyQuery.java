@@ -1,6 +1,8 @@
-package com.example.trippe;
+package com.example.trippe.ui.currency;
 
 import android.content.Context;
+
+import com.example.trippe.R;
 
 public class CurrencyQuery {
     private String sourceCurrency = "";
