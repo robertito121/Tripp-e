@@ -62,7 +62,6 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
                 fromCurrency = dropFromCurrency.getSelectedItem().toString();
                 toCurrency = dropToCurrency.getSelectedItem().toString();
                 fromAmount = Float.valueOf(txtFromAmount.getText().toString());
-                Log.w("SHIT", "'" + toCurrency.length() + "'");
                 // Do our checks to make sure we have valid inputs before accessing the web API or database
                 if (fromAmount <= 0) { // make sure we got a positive amount of money to start
                     Toast toast = Toast.makeText(getContext(), "Please enter a positive amount of money greater than zero", Toast.LENGTH_SHORT);
