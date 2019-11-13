@@ -7,7 +7,7 @@
 
 
     <EditText
-        android:id="@+id/txtFromCurrency"
+        android:id="@+id/txtFromAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_below="@id/txtFromCurrency"
+        android:layout_below="@id/txtFromAmount"
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown" />
 
