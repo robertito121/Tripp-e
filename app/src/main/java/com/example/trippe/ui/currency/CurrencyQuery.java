@@ -7,8 +7,10 @@ import android.util.Log;
 
 import com.example.trippe.R;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -85,11 +87,18 @@ public class CurrencyQuery {
         try {
             URL url = new URL(strUrl);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
+            request.setRequestMethod("GET");
+            InputStream inputStream = request.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String getData = bufferedReader.readLine();
+            request.disconnect();
             // Convert to JSON
-            JSONObject reader = new JSONObject(request.getContent().toString());
-            Log.w("JSON RESULT", reader.getJSONObject("rates").toString());
-
+            Log.w("GET RESULT", getData);
+            JSONObject reader = new JSONObject(getData);
+            JSONObject rate = reader.getJSONObject("rates");
+            Log.w("JSON RESULT", rate.getString("CAD"));
+            // TODO Actually use this data and then save to db. Parse out relevant fields
         } catch (Exception e) {
             Log.e("CurrencyQuery", e.toString(), e);
         }
