@@ -53,7 +53,7 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
 
             int red = Color.rgb(252, 159, 159); // set a local var for red error color
             // instantiate a CurrencyQuery object
-            CurrencyQuery currencyQuery = new CurrencyQuery(getContext());
+            //CurrencyQuery currencyQuery = new CurrencyQuery(getContext());
 
 
 
@@ -62,7 +62,6 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
                 fromCurrency = dropFromCurrency.getSelectedItem().toString();
                 toCurrency = dropToCurrency.getSelectedItem().toString();
                 fromAmount = Float.valueOf(txtFromAmount.getText().toString());
-                Log.w("SHIT", "'" + toCurrency.length() + "'");
                 // Do our checks to make sure we have valid inputs before accessing the web API or database
                 if (fromAmount <= 0) { // make sure we got a positive amount of money to start
                     Toast toast = Toast.makeText(getContext(), "Please enter a positive amount of money greater than zero", Toast.LENGTH_SHORT);
@@ -90,9 +89,12 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
                     txtResult.setText("");
                 } else {
                     //TODO WEB API REQUEST/DB QUERY
+                    CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), "EUR");
+                    currencyQuery.getRequest("");
                     txtFromAmount.setBackgroundColor(Color.WHITE); // reset our text color in case it was changed due to errors
                     txtResult.setText("Success!");
                 }
+
             } catch (Exception e) {
                 Log.e("CurrencyFragment", e.toString(), e);
                 txtFromAmount.setText("");
