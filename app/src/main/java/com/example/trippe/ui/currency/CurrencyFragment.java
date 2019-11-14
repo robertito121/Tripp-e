@@ -158,6 +158,7 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
         //-------------------------------------------
         // Testing a graph of currency histories
         //-------------------------------------------
+        // TODO update graph realtime based on exchange rate history
         GraphView currencyGraph = (GraphView) view.findViewById(R.id.currencyGraph);
         currencyGraph.setTitle("5 Day History");
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {

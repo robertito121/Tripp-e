@@ -17,6 +17,7 @@ import java.net.URL;
 
 
 public class CurrencyQuery {
+    // TODO add a history variable (likely a dictionary of tuples or something)
     private String sourceCurrency = "";
     private String destCurrency = "";
     private float sourceAmount = 0;
