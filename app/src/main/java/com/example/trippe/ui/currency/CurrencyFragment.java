@@ -59,8 +59,8 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
 
             try {
                 // retrieve the data from the ui elements
-                fromCurrency = dropFromCurrency.getSelectedItem().toString();
-                toCurrency = dropToCurrency.getSelectedItem().toString();
+                fromCurrency = dropFromCurrency.getSelectedItem().toString().substring(0, 3);  // needed to parse out just the currency abbreviation
+                toCurrency = dropToCurrency.getSelectedItem().toString().substring(0,3); // same here as above
                 fromAmount = Float.valueOf(txtFromAmount.getText().toString());
                 // Do our checks to make sure we have valid inputs before accessing the web API or database
                 if (fromAmount <= 0) { // make sure we got a positive amount of money to start
@@ -89,10 +89,11 @@ public class CurrencyFragment extends Fragment implements OnClickListener {
                     txtResult.setText("");
                 } else {
                     //TODO WEB API REQUEST/DB QUERY
-                    CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), "EUR");
-                    currencyQuery.getRequest("");
+                    CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), toCurrency, fromCurrency);
+                    currencyQuery.setSourceAmount(fromAmount);
+                    currencyQuery.getRequest(""); //TODO update this based on the date picker
                     txtFromAmount.setBackgroundColor(Color.WHITE); // reset our text color in case it was changed due to errors
-                    txtResult.setText("Success!");
+                    txtResult.setText(String.valueOf(currencyQuery.getDestAmount()));
                 }
 
             } catch (Exception e) {
