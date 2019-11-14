@@ -1,15 +1,12 @@
 package com.example.trippe.ui.currency;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
 import com.example.trippe.R;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -17,10 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class CurrencyQuery {
     private String sourceCurrency = "";
