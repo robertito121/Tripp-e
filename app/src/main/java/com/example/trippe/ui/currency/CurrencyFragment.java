@@ -15,18 +15,13 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
-
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-
 import com.example.trippe.R;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -39,9 +34,9 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     // need this within android fragments to pass the right context to stuff
     private  Context context = getContext();
     private String currencyOptions[]; // will store the values of our resource string array in strings.xml
-    private Spinner dropFromCurrency; //= (Spinner) view.findViewById(R.id.dropFromCurrency);
-    private Spinner dropToCurrency;// = (Spinner) view.findViewById(R.id.dropToCurrency);
-    private EditText txtFromAmount; //= (EditText) view.findViewById(R.id.txtFromAmount); // get our source currency amount
+    private Spinner dropFromCurrency;
+    private Spinner dropToCurrency;
+    private EditText txtFromAmount;
     private TextView txtResult;
     private ImageView imgFromFlag;
     private ImageView imgToFlag;
@@ -134,13 +129,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         });
 
         currencyGraph.addSeries(series);
-
-
-        currencyViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-            }
-        });
         return view;
     }
     // this is used to get our resource id via a string so we can set our flag icons by name

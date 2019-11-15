@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO Remove this and implement a threaded query
+        //TODO Remove this and implement a threaded query for web stuff
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -36,15 +36,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i("MainActivity", "Already have INTERNET Permissions");
         }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // No permissions lets request them
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_NETWORK_STATE},
-                    this.PERMISSION_REQUEST_CODE);
-            Log.i("MainActivity", "Got ACCESS_NETWORK_STATE Permissions");
-        } else {
-            Log.i("MainActivity", "Already have ACCESS_NETWORK_STATE Permissions");
-        }
+
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
