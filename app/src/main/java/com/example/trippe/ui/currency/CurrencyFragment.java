@@ -1,6 +1,5 @@
 package com.example.trippe.ui.currency;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,15 +23,15 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CurrencyFragment extends Fragment implements Spinner.OnItemSelectedListener { // OnClickListener
 
     private CurrencyViewModel currencyViewModel;
     private View view; // need this as an inflated view to make using the fragment_currency.xml file easy
-    // need this within android fragments to pass the right context to stuff
-    private  Context context = getContext();
     private String currencyOptions[]; // will store the values of our resource string array in strings.xml
     private Spinner dropFromCurrency;
     private Spinner dropToCurrency;
@@ -40,6 +39,13 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     private TextView txtResult;
     private ImageView imgFromFlag;
     private ImageView imgToFlag;
+    private long now;
+    private long ago;
+    // How many milliseconds in 1 day
+    private final long DAY_IN_MILLIS = 86400000;
+    private SimpleDateFormat formatter;
+    private GraphView currencyGraph;
+    private LineGraphSeries<DataPoint> series;
 
 
     private final TextWatcher txtFromAmountWatcher = new TextWatcher() {
@@ -83,19 +89,21 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         this.dropToCurrency.setOnItemSelectedListener(this);
         this.txtFromAmount.addTextChangedListener(txtFromAmountWatcher);
 
+        //Format needed for web api query
+        this.formatter = new SimpleDateFormat("yyyy-MM-dd");
 
         //------------------------------------------
         // The following block sets up our list of items to populate into the dropdown menus
         //------------------------------------------
-        currencyOptions = getResources().getStringArray(R.array.currency_array);
+        this.currencyOptions = getResources().getStringArray(R.array.currency_array);
 
         // we need this to pass to our array adaptor
         List<String> options = new ArrayList<String>();
 
         // iterate over our currency options and add them to a List of strings
         int i;
-        for (i = 0; i < currencyOptions.length; i++) {
-            options.add(currencyOptions[i]);
+        for (i = 0; i < this.currencyOptions.length; i++) {
+            options.add(this.currencyOptions[i]);
         }
 
         // Creating adapter for spinner
@@ -117,18 +125,22 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         //-------------------------------------------
         // Testing a graph of currency histories
         //-------------------------------------------
-        // TODO update graph realtime based on exchange rate history
-        GraphView currencyGraph = (GraphView) view.findViewById(R.id.currencyGraph);
-        currencyGraph.setTitle("5 Day History");
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
+        this.currencyGraph = (GraphView) view.findViewById(R.id.currencyGraph);
+        this.currencyGraph.setTitle("10 Day History");
+        this.series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                new DataPoint(-9, 1),
+                new DataPoint(-8, 1),
+                new DataPoint(-7, 1),
+                new DataPoint(-6, 1),
+                new DataPoint(-5, 1),
+                new DataPoint(-4, 1),
+                new DataPoint(-3, 1),
+                new DataPoint(-2, 1),
+                new DataPoint(-1, 1),
+                new DataPoint(0, 1)
         });
 
-        currencyGraph.addSeries(series);
+        this.currencyGraph.addSeries(series);
         return view;
     }
     // this is used to get our resource id via a string so we can set our flag icons by name
@@ -180,7 +192,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
             Log.e("processFormInput", e.toString(), e);
         }
 
-        //int red = Color.rgb(252, 159, 159); // set a local var for red error color
         if (strFromAmount.length() > 0) {
             try {
                 // retrieve the data from the ui elements
@@ -193,12 +204,23 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
                 } else if (fromCurrency.equals(toCurrency)) { // make sure the source and destination arent the same
                     this.txtResult.setText(decimalFormat.format(fromAmount));
                 } else {
+                    this.now = System.currentTimeMillis(); // current time in ms
+                    this.ago = now - 10 * DAY_IN_MILLIS; // 10 days ago
+
+                    String strNow = this.formatter.format(new Date(this.now));
+                    String strAgo = this.formatter.format(new Date(this.ago));
+
+                    Log.w("Current Date", strNow);
+                    Log.w("10 days ago", strAgo);
+
                     //TODO WEB API REQUEST/DB QUERY
                     CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), toCurrency, fromCurrency);
                     currencyQuery.setSourceAmount(fromAmount);
-                    currencyQuery.getRequest(""); //TODO update this based on the date picker
-                    this.txtFromAmount.setBackgroundColor(Color.WHITE); // reset our text color in case it was changed due to errors
+                    currencyQuery.getRequestLatest();
+
                     this.txtResult.setText(decimalFormat.format(currencyQuery.getDestAmount()));
+
+                    this.series.resetData( (DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
                 }
 
             } catch (Exception e) {
