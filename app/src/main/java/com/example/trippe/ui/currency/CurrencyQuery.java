@@ -20,13 +20,13 @@ public class CurrencyQuery {
     // TODO add a history variable (likely a dictionary of tuples or something)
     private String sourceCurrency = "";
     private String destCurrency = "";
-    private float sourceAmount = 0;
-    private float destAmount = 0;
+    private double sourceAmount = 0;
+    private double destAmount = 0;
 
     // We will query all source and destination currencies against USD as our base so we store
         // the exchange rates of each relative to USD for later conversion
-    private float destExchangeRate = 0;
-    private float sourceExchangeRate = 0;
+    private double destExchangeRate = 0;
+    private double sourceExchangeRate = 0;
     private Context context;
 
     public CurrencyQuery(Context context) {
@@ -43,13 +43,13 @@ public class CurrencyQuery {
         setSourceCurrency(source);
     }
 
-    public CurrencyQuery(Context context, String dest, float amount) {
+    public CurrencyQuery(Context context, String dest, double amount) {
         this.context = context;
         setDestCurrency(dest);
         setSourceAmount(amount);
     }
 
-    public CurrencyQuery(Context context, String dest, String source, float amount) {
+    public CurrencyQuery(Context context, String dest, String source, double amount) {
         this.context = context;
         setDestCurrency(dest);
         setSourceCurrency(source);
@@ -58,8 +58,8 @@ public class CurrencyQuery {
 
     public String getSourceCurrency() { return sourceCurrency; }
     public String getDestCurrency() { return destCurrency; }
-    public float getSourceAmount() { return sourceAmount; }
-    public float getDestAmount() { return destAmount; }
+    public double getSourceAmount() { return sourceAmount; }
+    public double getDestAmount() { return destAmount; }
 
     public void setSourceCurrency(String source) { // set our local sourceCurrency if its a valid entry
         if (validCurrency(source) && !source.equals(this.destCurrency)) {
@@ -75,7 +75,7 @@ public class CurrencyQuery {
         }
     }
 
-    public void setSourceAmount(float amount) { // standard setter, ensures amount is > 0
+    public void setSourceAmount(double amount) { // standard setter, ensures amount is > 0
         if (amount > 0 ) {
             this.sourceAmount = amount;
         }
@@ -132,8 +132,8 @@ public class CurrencyQuery {
 
             JSONObject reader = new JSONObject(httpGetRequestData); // convert our string into a JSONObject
             JSONObject rates = reader.getJSONObject("rates"); // neck down the data to the rates fields
-            this.destExchangeRate = Float.parseFloat(rates.getString(this.destCurrency)); // pull out our dest rate from json
-            this.sourceExchangeRate = Float.parseFloat(rates.getString(this.sourceCurrency)); // pull out or source rage from json
+            this.destExchangeRate = Double.parseDouble(rates.getString(this.destCurrency)); // pull out our dest rate from json
+            this.sourceExchangeRate = Double.parseDouble(rates.getString(this.sourceCurrency)); // pull out or source rage from json
 
             // FINALLY WE GET TO CONVERT STUFF
             this.destAmount = this.sourceAmount / this.sourceExchangeRate * this.destExchangeRate;

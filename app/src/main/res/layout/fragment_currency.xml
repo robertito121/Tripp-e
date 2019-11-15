@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true"
         android:inputType="numberDecimal"
         android:text=""
-        android:textSize="24sp" />
+        android:textSize="35sp" />
 
     <ImageView
         android:id="@+id/imgFromFlag"
@@ -74,9 +74,10 @@
         android:layout_below="@id/dropToCurrency"
         android:gravity="center_horizontal"
         android:text=""
-        android:layout_marginBottom="20dp"
-        android:background="#d9dbdd"
-        android:textSize="35sp" />
+        android:layout_marginBottom="30dp"
+        android:background="@color/colorPrimary"
+        android:textSize="35sp"
+        android:textColor="#FFFFFF"/>
 
     <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"

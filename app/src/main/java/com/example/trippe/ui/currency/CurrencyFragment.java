@@ -28,6 +28,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -176,9 +177,11 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         // set our containers to hold ui element data
         String fromCurrency = "";
         String toCurrency = "";
-        float fromAmount = 0;
+        double fromAmount = 0;
         String strFromAmount = this.txtFromAmount.getText().toString();
         Log.w("processFormInput", String.valueOf(strFromAmount.length()));
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
 
         try {
             fromCurrency = this.dropFromCurrency.getSelectedItem().toString().substring(0, 3);  // needed to parse out just the currency abbreviation
@@ -194,22 +197,20 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
             try {
                 // retrieve the data from the ui elements
                 Log.w("processFormInput", this.txtFromAmount.getText().toString());
-                fromAmount = Float.valueOf(strFromAmount);
+                fromAmount = Double.valueOf(strFromAmount);
                 // Do our checks to make sure we have valid inputs before accessing the web API or database
                 if (fromAmount <= 0) { // make sure we got a positive amount of money to start
-                    //this.txtFromAmount.setBackgroundColor(red);
                     this.txtResult.setText("");
                     this.txtFromAmount.setText("");
                 } else if (fromCurrency.equals(toCurrency)) { // make sure the source and destination arent the same
-                    //this.txtFromAmount.setBackgroundColor(Color.WHITE); // reset our text color in case it was changed due to errors
-                    this.txtResult.setText(strFromAmount);
+                    this.txtResult.setText(decimalFormat.format(fromAmount));
                 } else {
                     //TODO WEB API REQUEST/DB QUERY
                     CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), toCurrency, fromCurrency);
                     currencyQuery.setSourceAmount(fromAmount);
                     currencyQuery.getRequest(""); //TODO update this based on the date picker
                     this.txtFromAmount.setBackgroundColor(Color.WHITE); // reset our text color in case it was changed due to errors
-                    this.txtResult.setText(String.valueOf(currencyQuery.getDestAmount()));
+                    this.txtResult.setText(decimalFormat.format(currencyQuery.getDestAmount()));
                 }
 
             } catch (Exception e) {
