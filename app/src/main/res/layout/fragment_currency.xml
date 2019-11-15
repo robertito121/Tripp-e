@@ -12,17 +12,30 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
         android:inputType="numberDecimal"
         android:text=""
         android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/imgFromFlag"
+        android:layout_width="128px"
+        android:layout_height="120px"
+        android:scaleType="fitXY"
+        android:layout_below="@id/txtFromAmount"
+        android:src="@drawable/usd" />
 
     <Spinner
         android:id="@+id/dropFromCurrency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_below="@id/txtFromAmount"
+        android:layout_toRightOf="@id/imgFromFlag"
         android:background="@android:drawable/btn_dropdown"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
+        android:focusedByDefault="false"
+        android:forceHasOverlappingRendering="false"
         android:spinnerMode="dropdown" />
 
     <TextView
@@ -35,37 +48,41 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <ImageView
+        android:id="@+id/imgToFlag"
+        android:layout_width="128px"
+        android:layout_height="120px"
+        android:scaleType="fitXY"
+        android:src="@drawable/usd"
+        android:gravity="left"
+        android:layout_below="@id/txtToBox" />
+
     <Spinner
         android:id="@+id/dropToCurrency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_toRightOf="@id/imgToFlag"
         android:layout_below="@id/txtToBox"
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown" />
 
-    <Button
-        android:id="@+id/btnConvert"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dropToCurrency"
-        android:gravity="center_horizontal"
-        android:text="Convert"
-        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/txtResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnConvert"
+        android:layout_below="@id/dropToCurrency"
         android:gravity="center_horizontal"
-        android:text="to amount prints here"
-        android:textSize="24sp" />
+        android:text=""
+        android:layout_marginBottom="20dp"
+        android:background="#d9dbdd"
+        android:textSize="35sp" />
+
     <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
         android:layout_height="200dip"
-        android:id="@+id/currencyGraph"
-        android:layout_below="@id/txtResult" />
+        android:layout_below="@id/txtResult"
+        android:id="@+id/currencyGraph" />
 
 
 
