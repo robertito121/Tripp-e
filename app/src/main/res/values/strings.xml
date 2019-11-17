@@ -11,10 +11,37 @@
     <string name="selection_prompt">First, tell us whether your Trip is National or International</string>
     <string name="next_btn">Next</string>
     <string-array name="currency_array">
-        <item></item>
-        <item>USD</item>
-        <item>EUR</item>
-        <item>GBP</item>
-        <item>RUB</item>
+        <item>USD - US Dollar</item>
+        <item>EUR - Euro</item>
+        <item>AUD - Australian Dollar</item>
+        <item>BGN - Bulgarian Lev</item>
+        <item>BRL - Brazilian real</item>
+        <item>CAD - Canadian Dollar</item>
+        <item>CHF - Swiss Franc</item>
+        <item>CNY - Chinese Yuan Renminbi</item>
+        <item>CZK - Czech Koruna</item>
+        <item>DKK - Danish Krone</item>
+        <item>GBP - Pound Sterling</item>
+        <item>HKD - Hong Kong Dollar</item>
+        <item>HRK - Croatian Kuna</item>
+        <item>HUF - Hungarian Forint</item>
+        <item>IDR - Indonesian Rupiah</item>
+        <item>ILS - Israeli Shekel</item>
+        <item>INR - Indian Rupee</item>
+        <item>ISK - Icelandic Krona</item>
+        <item>JPY - Japanese Yen</item>
+        <item>KRW - South Korean Won</item>
+        <item>MXN - Mexican Peso</item>
+        <item>NOK - Norwegian Krone</item>
+        <item>NZD - New Zealand Dollar</item>
+        <item>PHP - Philippine Peso</item>
+        <item>PLN - Polish Zloty</item>
+        <item>SEK - Swedish Krona</item>
+        <item>SGD - Singapore Dollar</item>
+        <item>THB - Thai Baht</item>
+        <item>TRY - Turkish Lira</item>
+        <item>RON - Romanian Leu</item>
+        <item>RUB - Russian Rouble</item>
+        <item>ZAR - South African Rand</item>
     </string-array>
 </resources>
