@@ -3,6 +3,13 @@
     <string name="title_home">Trips</string>
     <string name="title_dashboard">Calendar</string>
     <string name="title_notifications">Currency</string>
+    <string name="add_trip">Add Trip</string>
+    <string name="destination_label">Destination</string>
+    <string name="national_radio_btn">National</string>
+    <string name="international_radio_btn">International</string>
+    <string name="congrats_label">Congratulations on your upcoming Trip!!!</string>
+    <string name="selection_prompt">First, tell us whether your Trip is National or International</string>
+    <string name="next_btn">Next</string>
     <string-array name="currency_array">
         <item></item>
         <item>USD</item>

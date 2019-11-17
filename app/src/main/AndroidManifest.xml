@@ -18,6 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.trips.AddTripView"></activity>
+        <activity android:name=".ui.trips.AddNationalTripView"></activity>
+        <activity android:name=".ui.trips.AddInternationalTrip"></activity>
+
     </application>
 
 </manifest>

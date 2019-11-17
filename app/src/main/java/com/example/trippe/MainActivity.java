@@ -1,14 +1,21 @@
 package com.example.trippe;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import android.database.sqlite.*;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +32,26 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-    }
 
+        //creating database when application starts
+        SQLiteDatabase trippeDatabase = null;
+
+        try {
+            trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
+            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "Trips (" +
+                                                                    "tripId VARCHAR(255) NOT NULL, " +
+                                                                    "startDate DATE NOT NULL, " +
+                                                                    "endDate DATE NOT NULL, " +
+                                                                    "milesAwayFromHome INT NOT NULL, " +
+                                                                    "timeZone VARCHAR NOT NULL, " +
+                                                                    "destinationAddress VARCHAR NOT NULL," +
+                                                                    "PRIMARY KEY (tripId));");
+        }
+        catch(Exception e){
+            Log.d("Error: ", e.getMessage());
+        }
+        finally {
+            trippeDatabase.close();
+        }
+    }
 }
