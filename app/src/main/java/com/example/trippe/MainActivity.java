@@ -17,7 +17,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import android.database.sqlite.*;
-import android.util.Log;s
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
