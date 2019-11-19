@@ -7,7 +7,6 @@ import android.widget.Toast;
 
 import com.example.trippe.R;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,7 +25,6 @@ public class CurrencyQuery {
     private String destCurrency = "";
     private double sourceAmount = 0;
     private double destAmount = 0;
-    private Date curDate;
 
     // We will query all source and destination currencies against USD as our base so we store
         // the exchange rates of each relative to USD for later conversion
@@ -100,6 +98,7 @@ public class CurrencyQuery {
                 "&end_at=" +
                 endDate +
                 symbols;
+        Log.w("URL REQUEST:", strUrl);
 
         try {
             URL url = new URL(strUrl);
@@ -120,21 +119,31 @@ public class CurrencyQuery {
             JSONObject rates = reader.getJSONObject("rates"); // neck down the data to the rates fields
             JSONArray keys = rates.names();
 
-            DataPoint points[] = new DataPoint[9];
+            DataPoint points[] = new DataPoint[10];
             DataPoint point;
 
             int x;
             Log.w("Names", rates.names().toString());
             JSONObject rate;
-            for (x = 0; x < keys.length(); x++) {
+            Log.w("Result Length", String.valueOf(keys.length()));
+            int length = 10; // TODO this is a bad bandaid solution to not getting enough results
+            for (x = 0; x < length; x++) {
                 /*Log.w("LOOP History", "Key: " +
                         keys.getString(x) +
                         " Value: " +
                         rates.getString(keys.getString(x)));*/
-                rate = rates.getJSONObject(keys.getString(x));
-                Log.w("Loop", rate.getString(this.destCurrency));
-                point = new DataPoint(x, rate.getDouble(this.destCurrency));
-                points[x] = point;
+                try {
+                    rate = rates.getJSONObject(keys.getString(x));
+                    Log.w("Loop", rate.getString(this.destCurrency));
+                    point = new DataPoint(x, rate.getDouble(this.destCurrency));
+                    points[x] = point;
+                } catch (Exception e) {
+                    Log.w("Loop:", "End of keys, set 0");
+                   // Log.e("API Error", e.toString(), e);
+                    point = new DataPoint(x, 1);
+                    points[x] = point;
+                }
+
             }
 
             //LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(points);
