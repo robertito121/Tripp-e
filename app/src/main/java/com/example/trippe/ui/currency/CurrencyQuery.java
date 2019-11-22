@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
+
 
 
 public class CurrencyQuery {
@@ -63,7 +63,6 @@ public class CurrencyQuery {
     public String getDestCurrency() { return this.destCurrency; }
     public double getSourceAmount() { return this.sourceAmount; }
     public double getDestAmount() { return this.destAmount; }
-
 
     public void setSourceCurrency(String source) { // set our local sourceCurrency if its a valid entry
         if (validCurrency(source) && !source.equals(this.destCurrency)) {
@@ -126,21 +125,22 @@ public class CurrencyQuery {
             Log.w("Names", rates.names().toString());
             JSONObject rate;
             Log.w("Result Length", String.valueOf(keys.length()));
-            int length = 10; // TODO this is a bad bandaid solution to not getting enough results
-            for (x = 0; x < length; x++) {
+            /*int length = 9; // TODO this is a bad bandaid solution to not getting enough results
+            for (x = length; x >=0; x--) {
                 /*Log.w("LOOP History", "Key: " +
                         keys.getString(x) +
                         " Value: " +
                         rates.getString(keys.getString(x)));*/
+            for (x = 0; x < 10; x++) {
                 try {
                     rate = rates.getJSONObject(keys.getString(x));
-                    Log.w("Loop", rate.getString(this.destCurrency));
+                    Log.w("Loop", String.valueOf(x) + ", " + rate.getString(this.destCurrency));
                     point = new DataPoint(x, rate.getDouble(this.destCurrency));
                     points[x] = point;
                 } catch (Exception e) {
-                    Log.w("Loop:", "End of keys, set 0");
+                    Log.w("Loop:", String.valueOf(x) + ", 0");
                    // Log.e("API Error", e.toString(), e);
-                    point = new DataPoint(x, 1);
+                    point = new DataPoint(x, 0);
                     points[x] = point;
                 }
 
