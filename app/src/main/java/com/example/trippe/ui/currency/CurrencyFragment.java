@@ -157,15 +157,12 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
 
     private void setFlag(ImageView imgView, String currency) {
         // TODO pull flag name based on currency from db
-        if (currency.equals("TRY")) { // limitation of resources, they cant use java keywords so
-            currency = "tur";           // try had to be changed to tur for the flag name
-        } else {
-            currency = currency.toLowerCase();
-        }
+        TemporaryFlagMap flagMap = new TemporaryFlagMap();
+        String flagName = flagMap.flags.get(currency);
 
         // now try to set our icon
         try {
-            int resourceId = getResId(currency, R.drawable.class); // use some fancy reflection to get our image name via string
+            int resourceId = getResId(flagName, R.drawable.class); // use some fancy reflection to get our image name via string
             if (resourceId != -1) {
                 imgView.setImageResource(resourceId);
             }
