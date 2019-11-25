@@ -127,18 +127,19 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         //-------------------------------------------
         this.currencyGraph = (GraphView) view.findViewById(R.id.currencyGraph);
         this.currencyGraph.setTitle("10 Day History");
-        this.series = new LineGraphSeries<DataPoint>(new DataPoint[] {
-                new DataPoint(-9, 1),
-                new DataPoint(-8, 1),
-                new DataPoint(-7, 1),
-                new DataPoint(-6, 1),
-                new DataPoint(-5, 1),
-                new DataPoint(-4, 1),
-                new DataPoint(-3, 1),
-                new DataPoint(-2, 1),
-                new DataPoint(-1, 1),
-                new DataPoint(0, 1)
-        });
+        this.series = new LineGraphSeries<DataPoint>();/*new DataPoint[] {
+                new DataPoint(-10, 0),
+                new DataPoint(-9, 0),
+                new DataPoint(-8, 0),
+                new DataPoint(-7, 0),
+                new DataPoint(-6, 0),
+                new DataPoint(-5, 0),
+                new DataPoint(-4, 0),
+                new DataPoint(-3, 0),
+                new DataPoint(-2, 0),
+                new DataPoint(-1, 0),
+                new DataPoint(0, 0)
+        });*/
 
         this.currencyGraph.addSeries(series);
         return view;
@@ -155,15 +156,13 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     }
 
     private void setFlag(ImageView imgView, String currency) {
-        if (currency.equals("TRY")) { // limitation of resources, they cant use java keywords so
-            currency = "tur";           // try had to be changed to tur for the flag name
-        } else {
-            currency = currency.toLowerCase();
-        }
+        // TODO pull flag name based on currency from db
+        TemporaryFlagMap flagMap = new TemporaryFlagMap();
+        String flagName = flagMap.flags.get(currency);
 
         // now try to set our icon
         try {
-            int resourceId = getResId(currency, R.drawable.class); // use some fancy reflection to get our image name via string
+            int resourceId = getResId(flagName, R.drawable.class); // use some fancy reflection to get our image name via string
             if (resourceId != -1) {
                 imgView.setImageResource(resourceId);
             }
@@ -213,14 +212,25 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
                     Log.w("Current Date", strNow);
                     Log.w("10 days ago", strAgo);
 
+                    WebAPIRequest apiRequest = new WebAPIRequest();
+                    apiRequest.setUrl(fromCurrency, toCurrency);
+                    //TrippeCurrency currency = apiRequest.getLatestAsTrippeCurrency();
+                    double rate = apiRequest.getLatestRate();
+
                     //TODO WEB API REQUEST/DB QUERY
+                    /*
                     CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), toCurrency, fromCurrency);
                     currencyQuery.setSourceAmount(fromAmount);
-                    currencyQuery.getRequestLatest();
+                    currencyQuery.getRequestLatest();*/
 
-                    this.txtResult.setText(decimalFormat.format(currencyQuery.getDestAmount()));
+                    this.txtResult.setText(decimalFormat.format(rate * fromAmount));
 
-                    this.series.resetData( (DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
+                    //LineGraphSeries<DataPoint> updateSeries = new LineGraphSeries<DataPoint>((DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
+                    //this.currencyGraph.addSeries(updateSeries);
+                    //this.series.appendData
+                    //this.series.appendData(currencyQuery.getRequestHistory(strAgo, strNow));
+
+                   // this.series.resetData( (DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
                 }
 
             } catch (Exception e) {
