@@ -32,7 +32,6 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TripsViewHolder holder, int position) {
-
         Trip trip = trips.get(position);
         //InternationalTrip internationalTrip = trips.get(position) instanceof InternationalTrip ? (InternationalTrip) trips.get(position) : null;
         holder.getDestinationFlag().setImageResource(trips.get(position).getTripFlagIndicator());

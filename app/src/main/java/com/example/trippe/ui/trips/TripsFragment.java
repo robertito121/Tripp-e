@@ -30,13 +30,11 @@ import java.util.ArrayList;
 
 public class TripsFragment extends Fragment {
 
-    private TripsViewModel tripsViewModel;
     private RecyclerView tripsRecyclerView;
     private View root;
     private ArrayList<Trip> trips;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        tripsViewModel = ViewModelProviders.of(this).get(TripsViewModel.class);
         root = inflater.inflate(R.layout.fragment_trips, container, false);
         tripsRecyclerView = (RecyclerView) root.findViewById(R.id.tripsList);
         tripsRecyclerView.setHasFixedSize(true);
@@ -47,7 +45,6 @@ public class TripsFragment extends Fragment {
         System.out.println(trips);
         TripsRecyclerViewAdapter tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(trips);
         tripsRecyclerView.setAdapter(tripsRecyclerViewAdapter);
-        System.out.println("hit");
         return root;
     }
 
