@@ -68,13 +68,18 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
+            //trippeDatabase.execSQL("DROP TABLE IF EXISTS Trips");
             trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "Trips (" +
                                                                     "tripId VARCHAR(255) NOT NULL, " +
-                                                                    "startDate DATE NOT NULL, " +
-                                                                    "endDate DATE NOT NULL, " +
+                                                                    "tripFlagIndicator INT(255) NOT NULL, " +
+                                                                    "destinationCity VARCHAR(255) NOT NULL, " +
+                                                                    "destinationState VARCHAR(255), " +
+                                                                    "destinationZipCode INT(255), " +
+                                                                    "destinationCountry VARCHAR(255) NOT NULL, " +
+                                                                    "startDate VARCHAR(255) NOT NULL, " +
+                                                                    "endDate VARCHAR(255) NOT NULL, " +
                                                                     "milesAwayFromHome INT NOT NULL, " +
-                                                                    "timeZone VARCHAR NOT NULL, " +
-                                                                    "destinationAddress VARCHAR NOT NULL," +
+                                                                    "timeZone VARCHAR(255) NOT NULL, " +
                                                                     "PRIMARY KEY (tripId));");
         }
         catch(Exception e){

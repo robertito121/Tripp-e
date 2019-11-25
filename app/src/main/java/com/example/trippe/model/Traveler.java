@@ -7,16 +7,16 @@ public class Traveler {
     private String firstName;
     private String lastName;
     private int age;
-    private Address address;
-    private Set<RegionalTrip> regionalTripsTraveled;
+    private Location location;
+    private Set<NationalTrip> nationalTripsTraveled;
     private Set<InternationalTrip> internationalTripsTraveled;
 
-    public Traveler(String firstName, String lastName, int age, Address address, Set<RegionalTrip> regionalTripsTraveled, Set<InternationalTrip> internationalTripsTraveled) {
+    public Traveler(String firstName, String lastName, int age, Location location, Set<NationalTrip> nationalTripsTraveled, Set<InternationalTrip> internationalTripsTraveled) {
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setAge(age);
-        this.setAddress(address);
-        this.setRegionalTripsTraveled(regionalTripsTraveled);
+        this.setLocation(location);
+        this.setNationalTripsTraveled(nationalTripsTraveled);
         this.setInternationalTripsTraveled(internationalTripsTraveled);
     }
 
@@ -45,20 +45,20 @@ public class Traveler {
         this.age = age;
     }
 
-    public Address getAddress() {
-        return address;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
-    public Set<RegionalTrip> getRegionalTripsTraveled() {
-        return regionalTripsTraveled;
+    public Set<NationalTrip> getNationalTripsTraveled() {
+        return nationalTripsTraveled;
     }
 
-    public void setRegionalTripsTraveled(Set<RegionalTrip> regionalTripsTraveled) {
-        this.regionalTripsTraveled = regionalTripsTraveled;
+    public void setNationalTripsTraveled(Set<NationalTrip> nationalTripsTraveled) {
+        this.nationalTripsTraveled = nationalTripsTraveled;
     }
 
     public Set<InternationalTrip> getInternationalTripsTraveled() {

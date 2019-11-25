@@ -1,37 +1,34 @@
 package com.example.trippe.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class InternationalTrip extends Trip {
 
-    private Address destinationCityAndCountry;
-    private ArrayList<String> foreignCurrencies;
+    private String currency;
     private ArrayList<String> foreignLanguages;
 
-    public InternationalTrip(String tripId, Date startDate, Date endDate, int milesAwayFromHome, TimeZone timeZone, Address destinationCityAndCountry, ArrayList<String> foreignCurrencies, ArrayList<String> foreignLanguages) {
-        super(tripId, startDate, endDate, milesAwayFromHome, timeZone);
-        this.setDestinationCityAndCountry(destinationCityAndCountry);
-        this.setForeignCurrencies(foreignCurrencies);
-        this.setForeignLanguages(foreignLanguages);
+    public InternationalTrip(String tripId, int tripFlagIndicator, String startDate, String endDate, Location destination, int milesAwayFromHome, TimeZone timeZone, String currency, ArrayList<String> foreignLanguages) {
+        super(tripId, tripFlagIndicator,startDate, endDate, destination, milesAwayFromHome, timeZone);
+        this.currency = currency;
+        this.foreignLanguages = foreignLanguages;
     }
 
-
-    public Address getDestinationCityAndCountry() {
-        return destinationCityAndCountry;
+    @NonNull
+    @Override
+    public String toString() {
+        return destination.getCity() + destination.getCountry();
     }
 
-    public void setDestinationCityAndCountry(Address destinationCityAndCountry) {
-        this.destinationCityAndCountry = destinationCityAndCountry;
-    }
-
-    public ArrayList<String> getForeignCurrencies() {
-        return foreignCurrencies;
-    }
-
-    public void setForeignCurrencies(ArrayList<String> foreignCurrencies) {
-        this.foreignCurrencies = foreignCurrencies;
+    public String foreignLanguagesToString() {
+        StringBuilder strBuider = new StringBuilder();
+        for (String language : foreignLanguages) {
+            strBuider.append(language + ", ");
+        }
+        return strBuider.toString();
     }
 
     public ArrayList<String> getForeignLanguages() {
@@ -40,5 +37,13 @@ public class InternationalTrip extends Trip {
 
     public void setForeignLanguages(ArrayList<String> foreignLanguages) {
         this.foreignLanguages = foreignLanguages;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

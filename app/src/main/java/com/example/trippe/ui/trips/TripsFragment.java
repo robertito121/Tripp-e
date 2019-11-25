@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -17,27 +18,36 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trippe.MainActivity;
 import com.example.trippe.R;
+import com.example.trippe.dao.TripDao;
+import com.example.trippe.model.Trip;
+
+import java.util.ArrayList;
 
 public class TripsFragment extends Fragment {
 
     private TripsViewModel tripsViewModel;
+    private RecyclerView tripsRecyclerView;
+    private View root;
+    private ArrayList<Trip> trips;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-        tripsViewModel =
-                ViewModelProviders.of(this).get(TripsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_trips, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        tripsViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        tripsViewModel = ViewModelProviders.of(this).get(TripsViewModel.class);
+        root = inflater.inflate(R.layout.fragment_trips, container, false);
+        tripsRecyclerView = (RecyclerView) root.findViewById(R.id.tripsList);
+        tripsRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        tripsRecyclerView.setLayoutManager(layoutManager);
+        TripDao tripDao = new TripDao();
+        trips = tripDao.getTrips();
+        System.out.println(trips);
+        TripsRecyclerViewAdapter tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(trips);
+        tripsRecyclerView.setAdapter(tripsRecyclerViewAdapter);
+        System.out.println("hit");
         return root;
     }
 
@@ -60,5 +70,5 @@ public class TripsFragment extends Fragment {
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-    }
-}
+                }
+                }
