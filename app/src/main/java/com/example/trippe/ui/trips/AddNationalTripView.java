@@ -54,7 +54,7 @@ public class AddNationalTripView extends AppCompatActivity {
     public void addNewNationalTrip(View view) {
         if (view.getId() == R.id.nationalAddTripBtn) {
             String tripId = Utility.generateTripId("NT");
-            int tripFlagIndicator = R.drawable.usd;
+            int tripFlagIndicator = R.drawable.united_states;
             String city = cityTextField.getText().toString();
             if (city.isEmpty()) {
                 cityTextField.setError("The city of your trip is required");
@@ -113,7 +113,7 @@ public class AddNationalTripView extends AppCompatActivity {
         int day = calendar.get(calendar.DAY_OF_MONTH);
         int month = calendar.get(calendar.MONTH);
         int year = calendar.get(calendar.YEAR);
-        int textFieldId = view.getId();
+        final int textFieldId = view.getId();
 
         DatePickerDialog datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
