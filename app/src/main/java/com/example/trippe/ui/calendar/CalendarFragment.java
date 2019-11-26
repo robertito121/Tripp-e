@@ -21,6 +21,7 @@ import com.example.trippe.model.Event;
 import com.example.trippe.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CalendarFragment extends Fragment {
 
@@ -50,13 +51,13 @@ public class CalendarFragment extends Fragment {
         labelTime = new TextView(view.getContext());
         labelTime.setId(20);
         labelTime.setText("Time");
-        labelTime.setTextColor(Color.WHITE);
+        labelTime.setTextColor(Color.BLACK);
         labelTime.setPadding(5, 5, 5, 5);
         tableHeading.addView(labelTime);// add the column to the table row here
         labelName = new TextView(view.getContext());
         labelName.setId(21);// define id that must be unique
         labelName.setText("Event"); // set the text for the header
-        labelName.setTextColor(Color.WHITE); // set the color
+        labelName.setTextColor(Color.BLACK); // set the color
         labelName.setPadding(5, 5, 5, 5); // set the padding (if required)
         tableHeading.addView(labelName); // add the column to the table row here
         eventTable.addView(tableHeading, new TableLayout.LayoutParams(
@@ -64,13 +65,21 @@ public class CalendarFragment extends Fragment {
                 TableLayout.LayoutParams.WRAP_CONTENT));
 
         fillEventTable(view, eventTable,mCalendarView.getDate());
+        System.out.println(mCalendarView.getDate());
+        Date date = new Date(mCalendarView.getDate());
+        date.equals(date);
+        System.out.println(new Date(mCalendarView.getDate()));
 
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView CalendarView, int year, int month, int dayOfMonth) {
                 String date = year + "/" + month + "/" + dayOfMonth;
                 eventDate.setText(date);
+                eventDate.setTextColor(Color.BLACK);
+                eventTable.removeAllViews();
                 fillEventTable(view, eventTable,mCalendarView.getDate());
+                System.out.println(mCalendarView.getDate());
+                System.out.println(new Date(mCalendarView.getDate()));
                 //Log.d(TAG, "onSelectedDayChange: yyyy/mm/dd:" + date);
 
                 /*Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
@@ -93,8 +102,8 @@ public class CalendarFragment extends Fragment {
                 //String eventTime = cursor.getString(2);// get the first variable
                 //String eventName = cursor.getDouble(4);// get the second variable
                 String eventTime = eventList.get(a).getTime();
-                String eventName = eventList.get(a).getTime();
-// Create the table row
+                String eventName = eventList.get(a).getName();
+                // Create the table row
                 TableRow tr = new TableRow(view.getContext());
                 if (count % 2 != 0) tr.setBackgroundColor(Color.GRAY);
                 tr.setId(100 + count);
@@ -102,18 +111,18 @@ public class CalendarFragment extends Fragment {
                         TableRow.LayoutParams.MATCH_PARENT,
                         TableRow.LayoutParams.WRAP_CONTENT));
 
-//Create two columns to add as table data
+                //Create two columns to add as table data
                 // Create a TextView to add date
                 TextView labelTIME = new TextView(view.getContext());
                 labelTIME.setId(200 + count);
                 labelTIME.setText(eventTime);
                 labelTIME.setPadding(2, 0, 5, 0);
-                labelTIME.setTextColor(Color.WHITE);
+                labelTIME.setTextColor(Color.BLACK);
                 tr.addView(labelTIME);
                 TextView labelNAME = new TextView(view.getContext());
                 labelNAME.setId(200 + count);
                 labelNAME.setText(eventName);
-                labelNAME.setTextColor(Color.WHITE);
+                labelNAME.setTextColor(Color.BLACK);
                 tr.addView(labelNAME);
 // finally add this to the table row
                 eventTable.addView(tr, new TableLayout.LayoutParams(
