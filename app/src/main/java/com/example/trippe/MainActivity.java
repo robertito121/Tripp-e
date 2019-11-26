@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
                                                                     "endDate VARCHAR(255) NOT NULL, " +
                                                                     "milesAwayFromHome INT NOT NULL, " +
                                                                     "timeZone VARCHAR(255) NOT NULL, " +
+                                                                    "currency VARCHAR(255) NOT NULL, " +
+                                                                    "languages VARCHAR(255) NOT NULL, " +
                                                                     "PRIMARY KEY (tripId));");
         }
         catch(Exception e){

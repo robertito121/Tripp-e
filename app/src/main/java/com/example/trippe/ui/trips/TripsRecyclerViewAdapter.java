@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trippe.R;
-import com.example.trippe.model.InternationalTrip;
-import com.example.trippe.model.NationalTrip;
 import com.example.trippe.model.Trip;
 
 import java.util.List;
@@ -33,15 +31,14 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsViewHold
     @Override
     public void onBindViewHolder(@NonNull TripsViewHolder holder, int position) {
         Trip trip = trips.get(position);
-        //InternationalTrip internationalTrip = trips.get(position) instanceof InternationalTrip ? (InternationalTrip) trips.get(position) : null;
         holder.getDestinationFlag().setImageResource(trips.get(position).getTripFlagIndicator());
-        holder.getDestination().setText("Trip to " + trip.toString());
+        holder.getDestination().setText("Trip to " + trip.nationalTripToString());
         holder.getFromDate().setText(trips.get(position).getStartDate());
         holder.getToDate().setText(trips.get(position).getEndDate());
         holder.getMilesAwayFromHome().setText(String.valueOf(trips.get(position).getMilesAwayFromHome()));
-        //holder.getCurrency().setText(internationalTrip.getCurrency());
-        //holder.getLanguages().setText(internationalTrip.foreignLanguagesToString());
-
+        holder.getTimeZone().setText(trips.get(position).getTimeZone().getID());
+        holder.getCurrency().setText(trips.get(position).getCurrency());
+        holder.getLanguages().setText(trips.get(position).foreignLanguagesToString());
     }
 
     @Override

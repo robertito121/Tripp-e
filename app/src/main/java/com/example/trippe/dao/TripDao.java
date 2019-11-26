@@ -9,6 +9,7 @@ import com.example.trippe.model.Location;
 import com.example.trippe.model.Trip;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TimeZone;
 
 
@@ -25,6 +26,7 @@ public class TripDao {
         return db;
     }
 
+    //TODO: check to make sure the ID is not being used again
     public boolean addTrip(Trip newTrip) {
         try {
             String tripId = newTrip.getTripId();
@@ -37,17 +39,21 @@ public class TripDao {
             String country = newTrip.getDestination().getCountry();
             int milesAwayFromHome = newTrip.getMilesAwayFromHome();
             String timeZone = newTrip.getTimeZone().getID();
+            String currency = newTrip.getCurrency();
+            String languages = newTrip.foreignLanguagesToString();
             ContentValues contentValues = new ContentValues();
             contentValues.put("tripId", tripId);
             contentValues.put("tripFlagIndicator", tripFlagIndicator);
-            contentValues.put("startDate", startDate.toString());
-            contentValues.put("endDate", endDate.toString());
+            contentValues.put("startDate", startDate);
+            contentValues.put("endDate", endDate);
             contentValues.put("destinationCity", city);
             contentValues.put("destinationState", state);
             contentValues.put("destinationCountry", country);
             contentValues.put("destinationZipCode", zipCode);
             contentValues.put("milesAwayFromHome", milesAwayFromHome);
             contentValues.put("timeZone", timeZone);
+            contentValues.put("currency", currency);
+            contentValues.put("languages", languages);
             db.insert("Trips", null, contentValues);
             return true;
         } catch (Exception e) {
@@ -78,7 +84,10 @@ public class TripDao {
                 int milesAwayFromHome = cursor.getInt(cursor.getColumnIndex("milesAwayFromHome"));
                 TimeZone timeZone = TimeZone.getTimeZone(cursor.getString(cursor.getColumnIndex("timeZone")));
                 Location location = new Location(city, state,zipCode,country);
-                Trip trip = new Trip(tripId, tripFlagIndicator, startDate, endDate, location, milesAwayFromHome,timeZone);
+                String currency = cursor.getString(cursor.getColumnIndex("currency"));
+                String languagesString = cursor.getString(cursor.getColumnIndex("languages"));
+                String[] languages = languagesString.split(",");
+                Trip trip = new Trip(tripId, tripFlagIndicator, startDate, endDate, location, milesAwayFromHome,timeZone,currency,languages);
                 trips.add(trip);
                 cursor.moveToNext();
             }

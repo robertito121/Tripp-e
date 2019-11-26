@@ -8,16 +8,12 @@ public class Traveler {
     private String lastName;
     private int age;
     private Location location;
-    private Set<NationalTrip> nationalTripsTraveled;
-    private Set<InternationalTrip> internationalTripsTraveled;
 
-    public Traveler(String firstName, String lastName, int age, Location location, Set<NationalTrip> nationalTripsTraveled, Set<InternationalTrip> internationalTripsTraveled) {
+    public Traveler(String firstName, String lastName, int age, Location location) {
         this.setFirstName(firstName);
         this.setLastName(lastName);
         this.setAge(age);
         this.setLocation(location);
-        this.setNationalTripsTraveled(nationalTripsTraveled);
-        this.setInternationalTripsTraveled(internationalTripsTraveled);
     }
 
 
@@ -53,19 +49,4 @@ public class Traveler {
         this.location = location;
     }
 
-    public Set<NationalTrip> getNationalTripsTraveled() {
-        return nationalTripsTraveled;
-    }
-
-    public void setNationalTripsTraveled(Set<NationalTrip> nationalTripsTraveled) {
-        this.nationalTripsTraveled = nationalTripsTraveled;
-    }
-
-    public Set<InternationalTrip> getInternationalTripsTraveled() {
-        return internationalTripsTraveled;
-    }
-
-    public void setInternationalTripsTraveled(Set<InternationalTrip> internationalTripsTraveled) {
-        this.internationalTripsTraveled = internationalTripsTraveled;
-    }
 }

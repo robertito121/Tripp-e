@@ -67,5 +67,5 @@ public class TripsFragment extends Fragment {
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-                }
-                }
+    }
+}

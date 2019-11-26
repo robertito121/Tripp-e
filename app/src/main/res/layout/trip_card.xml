@@ -124,12 +124,12 @@
 
             <TextView
                 android:id="@+id/timeZone"
-                android:layout_width="35dp"
+                android:layout_width="42dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="66dp"
-                android:layout_marginEnd="14dp"/>
+                android:layout_marginEnd="7dp" />
 
             <TextView
                 android:id="@+id/currency"
