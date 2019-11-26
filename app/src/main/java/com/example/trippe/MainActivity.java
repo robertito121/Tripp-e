@@ -1,20 +1,25 @@
 package com.example.trippe;
 
+import android.content.ClipData;
+import android.content.Context;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import android.database.sqlite.*;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 200;
@@ -57,6 +62,33 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-    }
 
+        //creating database when application starts
+        SQLiteDatabase trippeDatabase = null;
+
+        try {
+            trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
+            //trippeDatabase.execSQL("DROP TABLE IF EXISTS Trips");
+            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "Trips (" +
+                                                                    "tripId VARCHAR(255) NOT NULL, " +
+                                                                    "tripFlagIndicator INT(255) NOT NULL, " +
+                                                                    "destinationCity VARCHAR(255) NOT NULL, " +
+                                                                    "destinationState VARCHAR(255), " +
+                                                                    "destinationZipCode INT(255), " +
+                                                                    "destinationCountry VARCHAR(255) NOT NULL, " +
+                                                                    "startDate VARCHAR(255) NOT NULL, " +
+                                                                    "endDate VARCHAR(255) NOT NULL, " +
+                                                                    "milesAwayFromHome INT NOT NULL, " +
+                                                                    "timeZone VARCHAR(255) NOT NULL, " +
+                                                                    "currency VARCHAR(255) NOT NULL, " +
+                                                                    "languages VARCHAR(255) NOT NULL, " +
+                                                                    "PRIMARY KEY (tripId));");
+        }
+        catch(Exception e){
+            Log.d("Error: ", e.getMessage());
+        }
+        finally {
+            trippeDatabase.close();
+        }
+    }
 }
