@@ -1,4 +1,4 @@
-package com.example.trippe.ui.currency;
+package com.example.trippe.model;
 
 import java.util.Date;
 import java.util.Map;

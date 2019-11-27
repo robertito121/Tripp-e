@@ -90,5 +90,21 @@ public class MainActivity extends AppCompatActivity {
         finally {
             trippeDatabase.close();
         }
+        // create tbl_daily_rate
+        try {
+            trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
+            //trippeDatabase.execSQL("DROP TABLE IF EXISTS Trips");
+            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "tbl_daily_rate (" +
+                    "date VARCHAR(11) NOT NULL," +
+                    "currency_abbrev VARCHAR(3) NOT NULL," +
+                    "exchange_rate REAL NOT NULL," +
+                    "PRIMARY KEY (date, currencyAbbrev));");
+        }
+        catch(Exception e){
+            Log.d("Error: ", e.getMessage());
+        }
+        finally {
+            trippeDatabase.close();
+        }
     }
 }
