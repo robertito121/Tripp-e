@@ -42,7 +42,6 @@ public class TripsFragment extends Fragment {
         tripsRecyclerView.setLayoutManager(layoutManager);
         TripDao tripDao = new TripDao();
         trips = tripDao.getTrips();
-        System.out.println(trips);
         TripsRecyclerViewAdapter tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(trips);
         tripsRecyclerView.setAdapter(tripsRecyclerViewAdapter);
         return root;

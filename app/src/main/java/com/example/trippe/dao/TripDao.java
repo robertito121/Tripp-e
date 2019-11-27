@@ -18,7 +18,6 @@ public class TripDao {
     private SQLiteDatabase db;
 
     public TripDao() {
-        db = getConnection();
     }
 
     private SQLiteDatabase getConnection() {
@@ -29,6 +28,7 @@ public class TripDao {
     //TODO: check to make sure the ID is not being used again
     public boolean addTrip(Trip newTrip) {
         try {
+            db = getConnection();
             String tripId = newTrip.getTripId();
             int tripFlagIndicator = newTrip.getTripFlagIndicator();
             String startDate = newTrip.getStartDate();
@@ -70,6 +70,7 @@ public class TripDao {
         ArrayList<Trip> trips = new ArrayList<>();
 
         try {
+            db = getConnection();
             Cursor cursor = db.rawQuery("select * from Trips", null);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
