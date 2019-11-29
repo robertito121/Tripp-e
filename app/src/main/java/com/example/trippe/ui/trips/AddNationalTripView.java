@@ -19,7 +19,6 @@ import com.example.trippe.model.Location;
 import com.example.trippe.model.Trip;
 import com.example.trippe.util.Utility;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -29,7 +28,7 @@ public class AddNationalTripView extends AppCompatActivity {
     private EditText cityTextField;
     private EditText startDateTextField;
     private EditText endDateTextField;
-    private EditText zipcodeTextField;
+    private EditText zipCodeTextField;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class AddNationalTripView extends AppCompatActivity {
         endDateTextField = findViewById(R.id.nationalEndDateTextField);
         startDateTextField.setShowSoftInputOnFocus(false);
         endDateTextField.setShowSoftInputOnFocus(false);
-        zipcodeTextField = findViewById(R.id.nationalZipCodeField);
+        zipCodeTextField = findViewById(R.id.nationalZipCodeField);
 
 
     }
@@ -62,10 +61,10 @@ public class AddNationalTripView extends AppCompatActivity {
             }
 
             String state = stateSpinner.getSelectedItemPosition() > 0 ? stateSpinner.getSelectedItem().toString() : null;
-            int zipCode = Integer.parseInt(zipcodeTextField.getText().toString());
+            int zipCode = Integer.parseInt(zipCodeTextField.getText().toString());
 
-            if (zipcodeTextField.getText().toString().isEmpty()) {
-                zipcodeTextField.setError("The zip code of your trip is required");
+            if (zipCodeTextField.getText().toString().isEmpty()) {
+                zipCodeTextField.setError("The zip code of your trip is required");
             }
 
             Location nationalLocation = new Location(city, state,zipCode, "USA");

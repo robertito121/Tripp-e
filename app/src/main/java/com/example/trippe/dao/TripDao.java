@@ -2,7 +2,9 @@ package com.example.trippe.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.example.trippe.model.Location;
@@ -25,8 +27,7 @@ public class TripDao {
         return db;
     }
 
-    //TODO: check to make sure the ID is not being used again
-    public boolean addTrip(Trip newTrip) {
+    public boolean addTrip(Trip newTrip) throws SQLiteConstraintException {
         try {
             db = getConnection();
             String tripId = newTrip.getTripId();
@@ -56,11 +57,14 @@ public class TripDao {
             contentValues.put("languages", languages);
             db.insert("Trips", null, contentValues);
             return true;
-        } catch (Exception e) {
+        }
+        catch (SQLiteException e) {
             e.printStackTrace();
             Log.d("Database Writing Error", e.toString());
             return false;
-        } finally {
+
+        }
+        finally {
             db.close();
         }
     }
@@ -102,5 +106,24 @@ public class TripDao {
             db.close();
         }
         return trips;
+    }
+
+    public boolean isTripIdExistent(String tripId) {
+        boolean tripIdExists = true;
+        try {
+            db = getConnection();
+            Cursor cursor =  db.rawQuery("select * from Trips where tripId = \"" + tripId + "\"", null);
+            if (cursor.moveToFirst() == false) {
+                tripIdExists = false;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.d("Database Reading Error", e.toString());
+        }
+        finally {
+            db.close();
+        }
+        return tripIdExists;
     }
 }
