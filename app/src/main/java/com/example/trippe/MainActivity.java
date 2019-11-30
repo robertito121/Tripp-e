@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+
+import com.example.trippe.dao.CurrencyDao;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuView;
@@ -93,18 +95,25 @@ public class MainActivity extends AppCompatActivity {
         // create tbl_daily_rate
         try {
             trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
-            //trippeDatabase.execSQL("DROP TABLE IF EXISTS Trips");
+            //trippeDatabase.execSQL("DROP TABLE IF EXISTS tbl_daily_rate");
             trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "tbl_daily_rate (" +
                     "date VARCHAR(11) NOT NULL," +
                     "currency_abbrev VARCHAR(3) NOT NULL," +
                     "exchange_rate REAL NOT NULL," +
-                    "PRIMARY KEY (date, currencyAbbrev));");
+                    "PRIMARY KEY (date, currency_abbrev));");
         }
         catch(Exception e){
-            Log.d("Error: ", e.getMessage());
+            Log.e("TrippeDatabase tbl_daily_rate", e.getMessage(), e);
         }
         finally {
             trippeDatabase.close();
         }
+        // TODO try to update db with currency history
+        CurrencyDao currencyDao = new CurrencyDao();
+        // insert some junk data to test
+        currencyDao.insertRate("USD", 1, "2019-11-10");
+        currencyDao.insertRate("USD", 2, "2019-10-10");
+        currencyDao.insertRate("USD", 1.22, "2019-12-10");
+        currencyDao.getCurrencyHistory("2019-10-11", "2019-11-11", "USD", "CAD");
     }
 }
