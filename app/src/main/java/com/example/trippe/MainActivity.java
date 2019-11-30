@@ -92,28 +92,17 @@ public class MainActivity extends AppCompatActivity {
         finally {
             trippeDatabase.close();
         }
-        // create tbl_daily_rate
-        try {
-            trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
-            //trippeDatabase.execSQL("DROP TABLE IF EXISTS tbl_daily_rate");
-            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "tbl_daily_rate (" +
-                    "date VARCHAR(11) NOT NULL," +
-                    "currency_abbrev VARCHAR(3) NOT NULL," +
-                    "exchange_rate REAL NOT NULL," +
-                    "PRIMARY KEY (date, currency_abbrev));");
-        }
-        catch(Exception e){
-            Log.e("TrippeDatabase tbl_daily_rate", e.getMessage(), e);
-        }
-        finally {
-            trippeDatabase.close();
-        }
         // TODO try to update db with currency history
         CurrencyDao currencyDao = new CurrencyDao();
+        currencyDao.makeTableRates(false);
         // insert some junk data to test
-        currencyDao.insertRate("USD", 1, "2019-11-10");
-        currencyDao.insertRate("USD", 2, "2019-10-10");
-        currencyDao.insertRate("USD", 1.22, "2019-12-10");
-        currencyDao.getCurrencyHistory("2019-10-11", "2019-11-11", "USD", "CAD");
+        currencyDao.insertRate("USD", 1, "2019-10-10");
+        currencyDao.insertRate("USD", 2, "2019-10-11");
+        currencyDao.insertRate("USD", 1.22, "2019-11-19");
+        currencyDao.insertRate("USD", 1.22, "2019-11-11");
+        currencyDao.insertRate("USD", 2.22, "2019-11-12");
+        currencyDao.insertRate("USD", 1.42, "2019-11-14");
+        currencyDao.insertRate("USD", 1.42, "2019-11-13");
+        currencyDao.getCurrencyHistory("2019-11-10", "2019-11-20", "USD", "CAD");
     }
 }
