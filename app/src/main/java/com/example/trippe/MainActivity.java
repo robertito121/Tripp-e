@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+
+import com.example.trippe.util.Utility;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuView;
@@ -71,10 +73,8 @@ public class MainActivity extends AppCompatActivity {
             //trippeDatabase.execSQL("DROP TABLE IF EXISTS Trips");
             trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "Trips (" +
                                                                     "tripId VARCHAR(255) NOT NULL, " +
-                                                                    "tripFlagIndicator INT(255) NOT NULL, " +
                                                                     "destinationCity VARCHAR(255) NOT NULL, " +
                                                                     "destinationState VARCHAR(255), " +
-                                                                    "destinationZipCode INT(255), " +
                                                                     "destinationCountry VARCHAR(255) NOT NULL, " +
                                                                     "startDate VARCHAR(255) NOT NULL, " +
                                                                     "endDate VARCHAR(255) NOT NULL, " +

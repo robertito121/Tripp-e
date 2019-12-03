@@ -31,12 +31,10 @@ public class TripDao {
         try {
             db = getConnection();
             String tripId = newTrip.getTripId();
-            int tripFlagIndicator = newTrip.getTripFlagIndicator();
             String startDate = newTrip.getStartDate();
             String endDate = newTrip.getEndDate();
             String city = newTrip.getDestination().getCity();
             String state = newTrip.getDestination().getState();
-            int zipCode = newTrip.getDestination().getZipCode();
             String country = newTrip.getDestination().getCountry();
             int milesAwayFromHome = newTrip.getMilesAwayFromHome();
             String timeZone = newTrip.getTimeZone().getID();
@@ -44,13 +42,11 @@ public class TripDao {
             String languages = newTrip.foreignLanguagesToString();
             ContentValues contentValues = new ContentValues();
             contentValues.put("tripId", tripId);
-            contentValues.put("tripFlagIndicator", tripFlagIndicator);
             contentValues.put("startDate", startDate);
             contentValues.put("endDate", endDate);
             contentValues.put("destinationCity", city);
             contentValues.put("destinationState", state);
             contentValues.put("destinationCountry", country);
-            contentValues.put("destinationZipCode", zipCode);
             contentValues.put("milesAwayFromHome", milesAwayFromHome);
             contentValues.put("timeZone", timeZone);
             contentValues.put("currency", currency);
@@ -79,20 +75,18 @@ public class TripDao {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 String tripId = cursor.getString(cursor.getColumnIndex("tripId"));
-                int tripFlagIndicator = cursor.getInt(cursor.getColumnIndex("tripFlagIndicator"));
                 String startDate = cursor.getString(cursor.getColumnIndex("startDate"));
                 String endDate = cursor.getString(cursor.getColumnIndex("endDate"));
                 String city = cursor.getString(cursor.getColumnIndex("destinationCity"));
                 String state = cursor.getString(cursor.getColumnIndex("destinationState"));
-                int zipCode = cursor.getInt(cursor.getColumnIndex("destinationZipCode"));
                 String country = cursor.getString(cursor.getColumnIndex("destinationCountry"));
                 int milesAwayFromHome = cursor.getInt(cursor.getColumnIndex("milesAwayFromHome"));
                 TimeZone timeZone = TimeZone.getTimeZone(cursor.getString(cursor.getColumnIndex("timeZone")));
-                Location location = new Location(city, state,zipCode,country);
+                Location location = new Location(city, state,country);
                 String currency = cursor.getString(cursor.getColumnIndex("currency"));
                 String languagesString = cursor.getString(cursor.getColumnIndex("languages"));
                 String[] languages = languagesString.split(",");
-                Trip trip = new Trip(tripId, tripFlagIndicator, startDate, endDate, location, milesAwayFromHome,timeZone,currency,languages);
+                Trip trip = new Trip(tripId, startDate, endDate, location, milesAwayFromHome,timeZone,currency,languages);
                 trips.add(trip);
                 cursor.moveToNext();
             }

@@ -9,7 +9,6 @@ import java.util.TimeZone;
 public class Trip {
 
     private String tripId;
-    private int tripFlagIndicator;
     private String startDate;
     private String endDate;
     protected Location destination;
@@ -19,9 +18,8 @@ public class Trip {
     private String[] languages;
 
 
-    public Trip(String tripId, int tripFlagIndicator, String startDate, String endDate, Location destination, int milesAwayFromHome, TimeZone timeZone, String currency, String[] languages) {
+    public Trip(String tripId, String startDate, String endDate, Location destination, int milesAwayFromHome, TimeZone timeZone, String currency, String[] languages) {
         this.tripId = tripId;
-        this.tripFlagIndicator = tripFlagIndicator;
         this.startDate = startDate;
         this.endDate = endDate;
         this.destination = destination;
@@ -36,7 +34,7 @@ public class Trip {
     }
 
     public String internationalTripToString() {
-        return destination.getCity() + "," + destination.getCountry();
+        return destination.getCity() + ", " + destination.getCountry();
     }
 
     public String foreignLanguagesToString() {
@@ -85,14 +83,6 @@ public class Trip {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
-    }
-
-    public int getTripFlagIndicator() {
-        return tripFlagIndicator;
-    }
-
-    public void setTripFlagIndicator(int tripFlagIndicator) {
-        this.tripFlagIndicator = tripFlagIndicator;
     }
 
     public Location getDestination() {

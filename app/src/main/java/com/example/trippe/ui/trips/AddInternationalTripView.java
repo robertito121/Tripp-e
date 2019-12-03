@@ -22,44 +22,41 @@ import com.example.trippe.util.Utility;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class AddNationalTripView extends AppCompatActivity {
+public class AddInternationalTripView extends AppCompatActivity {
 
-    private Spinner stateSpinner;
     private EditText cityTextField;
     private EditText startDateTextField;
     private EditText endDateTextField;
+    private Spinner countrySpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_national_trip);
-        setTitle("Add National Trip");
-        stateSpinner = findViewById(R.id.stateDropDownSpinner);
-        cityTextField = findViewById(R.id.nationalCityTextField);
-        startDateTextField = findViewById(R.id.nationalStartDateTextField);
-        endDateTextField = findViewById(R.id.nationalEndDateTextField);
+        setContentView(R.layout.activity_add_international_trip);
+        setTitle("Add International Trip");
+        countrySpinner = findViewById(R.id.countryDropDownSpinner);
+        cityTextField = findViewById(R.id.internationalCityTextField);
+        startDateTextField = findViewById(R.id.internationalStartDateTextField);
+        endDateTextField = findViewById(R.id.internationalEndDateTextField);
         startDateTextField.setShowSoftInputOnFocus(false);
         endDateTextField.setShowSoftInputOnFocus(false);
     }
 
-    //TODO: make method support national trip from other countries dynamically right now is set up only for US
-    //TODO: add checker for dates to make sure they are correct timeframe wise
-    //TODO: implement city spinner depending on the State chosen
-    public void addNewNationalTrip(View view) {
-        if (view.getId() == R.id.nationalAddTripBtn) {
-            String tripId = Utility.generateTripId("NT");
+    public void addNewInternationalTrip(View view) {
+        if (view.getId() == R.id.internationalAddTripBtn) {
+            String tripId = Utility.generateTripId("IT");
+            String country = countrySpinner.getSelectedItemPosition() > 0 ? countrySpinner.getSelectedItem().toString() : null;
             String city = cityTextField.getText().toString();
-            String state = stateSpinner.getSelectedItemPosition() > 0 ? stateSpinner.getSelectedItem().toString() : null;
             String startDate = startDateTextField.getText().toString();
             String endDate = endDateTextField.getText().toString();
 
-            if (city.isEmpty() || state == null || startDate.isEmpty() || endDate.isEmpty()) {
+            if (country == null || city.isEmpty() || startDate.isEmpty() || endDate.isEmpty()) {
+                if (country == null) {
+                    TextView spinnerError = (TextView) countrySpinner.getSelectedView();
+                    spinnerError.setError("Please select a State for your Trip");
+                }
                 if (city.isEmpty()) {
                     cityTextField.setError("The city of your trip is required");
-                }
-                if (state == null) {
-                    TextView spinnerError = (TextView) stateSpinner.getSelectedView();
-                    spinnerError.setError("Please select a State for your Trip");
                 }
                 if (startDate.isEmpty()) {
                     startDateTextField.setError("The start date of your trip is required");
@@ -69,9 +66,9 @@ public class AddNationalTripView extends AppCompatActivity {
                 }
             }
             else {
-                Location nationalLocation = new Location(city, state, "united states");
+                Location internationalLocation = new Location(city, country);
                 String[] languages = {"English", "Spanish"};
-                Trip newTrip = new Trip(tripId,startDate, endDate, nationalLocation, 0, TimeZone.getTimeZone("EST"), "USD", languages);
+                Trip newTrip = new Trip(tripId, startDate, endDate, internationalLocation, 0, TimeZone.getTimeZone("EST"), "USD", languages);
                 TripDao tripDao = new TripDao();
                 boolean isAddedToDatabase =  tripDao.addTrip(newTrip);
                 if (isAddedToDatabase == true) {
@@ -83,6 +80,7 @@ public class AddNationalTripView extends AppCompatActivity {
     }
 
     public void showDatePicker(View view) {
+
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(calendar.DAY_OF_MONTH);
         int month = calendar.get(calendar.MONTH);
@@ -92,7 +90,7 @@ public class AddNationalTripView extends AppCompatActivity {
         DatePickerDialog datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                if (textFieldId == R.id.nationalStartDateTextField) {
+                if (textFieldId == R.id.internationalStartDateTextField) {
                     startDateTextField.setText((month + 1) + "/" + (dayOfMonth) + "/" + year);
                     startDateTextField.setError(null);
                 }

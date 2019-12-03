@@ -47,7 +47,6 @@ public class Utility {
      * @param anyClass
      * @return the resource id as int
      */
-    //TODO: need to implement another helper method that would change the resource name from a string that contains spaces to a string that has underscores in ordere to accomodate country names that are two words.
     public static int getResourceIndicatorByString(String resourceName, Class<?> anyClass) {
         try {
             Field idField = anyClass.getDeclaredField(resourceName);

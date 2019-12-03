@@ -34,7 +34,7 @@
                 android:layout_marginLeft="7dp"
                 android:layout_marginTop="9dp"
                 android:layout_toRightOf="@id/destinationFlag"
-                android:textSize="22sp"
+                android:textSize="18dp"
                 android:textStyle="bold" />
 
             <TextView
