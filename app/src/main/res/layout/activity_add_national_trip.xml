@@ -31,19 +31,6 @@
         android:hint="City"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/nationalZipCodeField"
-        android:layout_width="334dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="41dp"
-        android:layout_marginTop="290dp"
-        android:ems="10"
-        android:hint="zipcode"
-        android:inputType="number" />
-
     <Spinner
         android:id="@+id/stateDropDownSpinner"
         android:layout_width="331dp"
@@ -76,8 +63,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="43dp"
-        android:layout_marginTop="366dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="296dp"
         android:editable="false"
         android:ems="10"
         android:hint="Start Date"
@@ -91,8 +78,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="446dp"
+        android:layout_marginStart="43dp"
+        android:layout_marginTop="381dp"
         android:duplicateParentState="false"
         android:editable="false"
         android:ems="10"
@@ -106,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="75dp"
         android:onClick="addNewNationalTrip"
         android:text="Add Trip" />
 

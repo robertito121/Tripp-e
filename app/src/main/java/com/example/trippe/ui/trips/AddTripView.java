@@ -1,9 +1,7 @@
 package com.example.trippe.ui.trips;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.RadioButton;
 import androidx.annotation.Nullable;
@@ -37,7 +35,7 @@ public class AddTripView extends AppCompatActivity {
             intent = new Intent(this, AddNationalTripView.class );
         }
         else {
-            intent = new Intent(this, AddInternationalTrip.class);
+            intent = new Intent(this, AddInternationalTripView.class);
         }
         startActivity(intent);
     }

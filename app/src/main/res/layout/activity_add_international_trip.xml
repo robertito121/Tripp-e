@@ -9,6 +9,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="58dp"
+        android:onClick="addNewInternationalTrip"
         android:text="Add Trip" />
 
     <Spinner
@@ -20,6 +21,7 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="41dp"
         android:layout_marginTop="131dp"
+        android:entries="@array/countries"
         android:background="@android:drawable/btn_dropdown"
         android:spinnerMode="dropdown" />
 
@@ -35,7 +37,7 @@
         android:textSize="18sp" />
 
     <EditText
-        android:id="@+id/internationalcityTextField"
+        android:id="@+id/internationalCityTextField"
         android:layout_width="332dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -58,10 +60,11 @@
         android:layout_marginTop="407dp"
         android:ems="10"
         android:hint="End Date"
+        android:onClick="showDatePicker"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/internationalstartDateTextField"
+        android:id="@+id/internationalStartDateTextField"
         android:layout_width="332dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -71,10 +74,11 @@
         android:layout_marginTop="311dp"
         android:ems="10"
         android:hint="Start Date"
+        android:onClick="showDatePicker"
         android:inputType="textPersonName" />
 
     <TextView
-        android:id="@+id/internationalprompLabel"
+        android:id="@+id/internationalPromptLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
