@@ -5,6 +5,8 @@ import android.util.Log;
 import com.example.trippe.dao.TripDao;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utility {
@@ -55,5 +57,45 @@ public class Utility {
             Log.e("setFlag", e.toString(), e);
             return -1;
         }
+    }
+
+
+    /**
+     * this method is used to get the current date as a string in the format yyyy-MM-dd
+     * in order to interface with the database or CurrencyDao and/or WebAPIRequest classes
+     * @return today's date as a String
+     */
+    public static String getTodaysDate(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Long now = System.currentTimeMillis(); // current time in ms
+        String strNow = "";
+        try {
+            strNow = formatter.format(new Date(now));
+        } catch (Exception e) {
+            Log.e("getTodaysDate", e.toString(), e);
+        }
+        return strNow;
+    }
+
+
+    /**
+     * this method is used to get the current date 'daysAgo' number of days ago as a
+     * string in the format yyyy-MM-dd
+     * in order to interface with the database or CurrencyDao and/or WebAPIRequest classes
+     * @param daysAgo
+     * @return date 'daysAgo' as a String
+     */
+    public static String getDateAgo(int daysAgo){
+        long DAY_IN_MILLIS = 86400000; // one day in milliseconds
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Long now = System.currentTimeMillis(); // current time in ms
+        long ago = now - daysAgo * DAY_IN_MILLIS; // calculate date 10 days ago
+        String strAgo = "";
+        try {
+            strAgo = formatter.format(new Date(ago));
+        } catch (Exception e) {
+            Log.e("getDateAgo", e.toString(), e);
+        }
+        return strAgo;
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.example.trippe.model.TrippeCurrency;
 import com.example.trippe.ui.currency.WebAPIRequest;
+import com.example.trippe.util.Utility;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -124,8 +125,7 @@ public class CurrencyDao {
         try {
             db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
             if (WebAPIRequest.invalidDate(date)) {
-                date = WebAPIRequest.getTodaysDate();
-            }
+                date = Utility.getTodaysDate();           }
 
             while (rate == 0) {
                 String query = "SELECT * FROM tbl_daily_rate WHERE tbl_daily_rate.currency_abbrev = '" +
@@ -153,7 +153,7 @@ public class CurrencyDao {
                     }
                 }
                 daysAgo++;
-                date = WebAPIRequest.getDateAgo(daysAgo);
+                date = Utility.getDateAgo(daysAgo);
             }
             if (db.isOpen()) {
                 db.close();
@@ -204,7 +204,7 @@ public class CurrencyDao {
         update previous missing days
          */
         WebAPIRequest request = new WebAPIRequest();
-        request.setUrl("USD", request.getDateAgo(daysAgo), request.getTodaysDate());
+        request.setUrl("USD", Utility.getDateAgo(daysAgo), Utility.getTodaysDate());
         Log.i("updateHistory", "Calling getHistoryAsMap");
         Map<String, TrippeCurrency> currencyMap;
         currencyMap = request.getHistoryAsMap();

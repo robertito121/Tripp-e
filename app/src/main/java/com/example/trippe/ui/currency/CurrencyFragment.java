@@ -18,19 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.trippe.R;
-<<<<<<< HEAD
 import com.example.trippe.dao.CurrencyDao;
-=======
 import com.example.trippe.util.Utility;
->>>>>>> master
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class CurrencyFragment extends Fragment implements Spinner.OnItemSelectedListener { // OnClickListener
@@ -44,11 +38,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     private TextView txtResult;
     private ImageView imgFromFlag;
     private ImageView imgToFlag;
-    private long now;// TODO REMOVE
-    private long ago; // TODO REMOVE
-    // How many milliseconds in 1 day
-    private final long DAY_IN_MILLIS = 86400000; // TODO REMOVE
-    private SimpleDateFormat formatter; // TODO REMOVE
     private GraphView currencyGraph;
     private LineGraphSeries<DataPoint> series;
 
@@ -202,8 +191,8 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
                         double toRate = currencyDao.selectCurrencyRate("", toCurrency);
                         Log.i("processFormInput", "to:" + toRate + " from:" + fromRate);
                         if (toRate > 0) {
-                            double rate = fromRate * toRate;
-                            this.txtResult.setText(decimalFormat.format(rate * fromAmount));
+                            double rate = fromAmount * (1/fromRate) * toRate;
+                            this.txtResult.setText(decimalFormat.format(rate));
                         } else {
                             this.txtResult.setText("");
                         }

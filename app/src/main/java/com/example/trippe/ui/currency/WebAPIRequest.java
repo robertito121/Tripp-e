@@ -219,31 +219,7 @@ public class WebAPIRequest {
         }
     }
 
-    public static String getTodaysDate(){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Long now = System.currentTimeMillis(); // current time in ms
-        String strNow = "";
-        try {
-            strNow = formatter.format(new Date(now));
-        } catch (Exception e) {
-            Log.e("getTodaysDate", e.toString(), e);
-        }
-        return strNow;
-    }
 
-    public static String getDateAgo(int daysAgo){
-        long DAY_IN_MILLIS = 86400000; // one day in milliseconds
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Long now = System.currentTimeMillis(); // current time in ms
-        long ago = now - daysAgo * DAY_IN_MILLIS; // calculate date 10 days ago
-        String strAgo = "";
-        try {
-            strAgo = formatter.format(new Date(ago));
-        } catch (Exception e) {
-            Log.e("getDateAgo", e.toString(), e);
-        }
-        return strAgo;
-    }
 
     public Map<String, TrippeCurrency> getHistoryAsMap() {
         Map<String, TrippeCurrency> currencyMap = new HashMap();

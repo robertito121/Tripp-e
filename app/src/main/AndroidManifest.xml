@@ -21,12 +21,9 @@
 
         <activity android:name=".ui.trips.AddTripView"></activity>
         <activity android:name=".ui.trips.AddNationalTripView"></activity>
-<<<<<<< HEAD
-        <activity android:name=".ui.trips.AddInternationalTrip"></activity>
-=======
+        <activity android:name=".ui.trips.AddInternationalTripView"></activity>
         <activity android:name=".ui.trips.AddInternationalTripView"></activity>
 
->>>>>>> master
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>

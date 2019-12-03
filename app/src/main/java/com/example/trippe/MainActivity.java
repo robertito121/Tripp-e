@@ -7,12 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-
-<<<<<<< HEAD
 import com.example.trippe.dao.CurrencyDao;
-=======
 import com.example.trippe.util.Utility;
->>>>>>> master
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuView;
