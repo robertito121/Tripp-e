@@ -2,7 +2,7 @@ package com.example.trippe.ui.currency;
 
 import android.util.Log;
 
-import com.jjoe64.graphview.series.DataPoint;
+import com.example.trippe.model.TrippeCurrency;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +20,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class WebAPIRequest {
@@ -103,7 +106,7 @@ public class WebAPIRequest {
     }
 
     // check that a currency is a valid format and privided in our api
-    public boolean invalidCurrency(String currency) {
+    public static boolean invalidCurrency(String currency) {
         // TODO access database for list of currencies
         String currencies[] = {
                 "USD", "EUR", "AUD", "BGN",
@@ -126,7 +129,7 @@ public class WebAPIRequest {
     }
 
     // checks that a string date is a valid format for the api
-    public boolean invalidDate(String inDate) {
+    public static boolean invalidDate(String inDate) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         try {
@@ -145,7 +148,7 @@ public class WebAPIRequest {
             date = df.parse(inDate);
             return date;
         } catch (ParseException e) {
-            Log.w("invalidDate", "Date: " + inDate + " is invalid");
+            Log.w("getDateFromString", "Date: " + inDate + " is invalid");
             date = new Date();
             return date;
         }
@@ -156,10 +159,10 @@ public class WebAPIRequest {
         return this.httpGet();
     }
 
-    // returns an unprocessed jsonobject from our query
     public JSONObject getRatesAsJSON() {
         JSONObject jsonGetResult;
         String httpGetResult = this.httpGet();
+        Log.i("getRatesAsJSON", httpGetResult);
 
         try {
             jsonGetResult = new JSONObject(httpGetResult); // convert our string into a JSONObject
@@ -187,35 +190,7 @@ public class WebAPIRequest {
             return rate;
         }
     }
-    /*
-    public TrippeCurrency getLatestAsTrippeCurrency(){
-        JSONObject jsonGetResult = this.getRatesAsJSON();
-        JSONObject rate;
-        TrippeCurrency currency = new TrippeCurrency();
-        try {
-            JSONObject rates = jsonGetResult.getJSONObject("rates"); // neck down the data to the rates fields
-            JSONArray keys = rates.names();
-            Date date = this.getDateFromString(rates.getString("date"));
-            for (int x = 0; x < keys.length(); x++) {
-                currency.setAbbreviation(keys.getString(x)); // set our currency abbrev
-                rate = rates.getJSONObject(keys.getString(x));
-               // currency.addRate(date, rate);
-            }
-        } catch(JSONException e){
-            return new TrippeCurrency();
-        }
-        return currency;
-    }
-*/
 
-   /* // return an array of currency objects
-    public TrippeCurrency[] getHistoricalAsTrippeCurrency(){
-            TrippeCurrency currencies[];
-
-            return currencies;
-        }
-     */
-    // perform http get request and return a string of json data
     public String httpGet() {
         URL url;
         HttpURLConnection request;
@@ -244,8 +219,81 @@ public class WebAPIRequest {
         }
     }
 
-/*
-    private void sortDates() {
+    public static String getTodaysDate(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Long now = System.currentTimeMillis(); // current time in ms
+        String strNow = "";
+        try {
+            strNow = formatter.format(new Date(now));
+        } catch (Exception e) {
+            Log.e("getTodaysDate", e.toString(), e);
+        }
+        return strNow;
+    }
 
-    }*/
+    public static String getDateAgo(int daysAgo){
+        long DAY_IN_MILLIS = 86400000; // one day in milliseconds
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Long now = System.currentTimeMillis(); // current time in ms
+        long ago = now - daysAgo * DAY_IN_MILLIS; // calculate date 10 days ago
+        String strAgo = "";
+        try {
+            strAgo = formatter.format(new Date(ago));
+        } catch (Exception e) {
+            Log.e("getDateAgo", e.toString(), e);
+        }
+        return strAgo;
+    }
+
+    public Map<String, TrippeCurrency> getHistoryAsMap() {
+        Map<String, TrippeCurrency> currencyMap = new HashMap();
+        TrippeCurrency currency;
+        try {
+            JSONObject result = this.getRatesAsJSON();
+
+            JSONObject rates = result.getJSONObject("rates");
+
+            String day;
+            String strCurrency;
+            Double rate;
+            for (Iterator<String> it1 = rates.keys(); it1.hasNext(); ) {
+                day = it1.next();
+                Date date = this.getDateFromString(day);
+                JSONObject days = rates.getJSONObject(day);
+                for (Iterator<String> it2 = days.keys(); it2.hasNext();) {
+                    strCurrency = it2.next();
+                    Log.i("iterator", strCurrency);
+                    if (currencyMap.containsKey(strCurrency)) {
+                        currency = currencyMap.get(strCurrency);
+                        if (days.has(strCurrency)) {
+                            rate = days.getDouble(strCurrency);
+                            Log.i("gotrate", "map and rates: " + String.valueOf(rate));
+                        } else {
+                            rate = 0.0;
+                            Log.i("gotrate", "map no rates " + String.valueOf(rate));
+                        }
+                        currency.addRate(this.getDateFromString(day), rate);
+                        currencyMap.replace(strCurrency, currency);
+                    } else {
+                        if (days.has(strCurrency)) {
+                            rate = days.getDouble(strCurrency);
+                            Log.i("gotrate", "no map and rates " + String.valueOf(rate));
+                        } else {
+                            rate = 0.0;
+                            Log.i("gotrate", "no map and no rates " + String.valueOf(rate));
+                        }
+                        currency = new TrippeCurrency(strCurrency);
+                        currency.addRate(date, rate);
+                        currencyMap.put(strCurrency, currency);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("getHistoryAsList", e.toString(), e);
+            return currencyMap;
+        } catch (Exception e) {
+            Log.e("getHistoryAsList", e.toString(), e);
+        }
+        return currencyMap;
+    }
 }

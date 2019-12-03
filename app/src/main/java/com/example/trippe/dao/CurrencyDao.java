@@ -4,52 +4,53 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.database.sqlite.*;
 
-import com.example.trippe.model.Trip;
 import com.example.trippe.model.TrippeCurrency;
-import com.jjoe64.graphview.series.DataPoint;
+import com.example.trippe.ui.currency.WebAPIRequest;
 
-import static android.content.Context.MODE_PRIVATE;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
 
 public class CurrencyDao {
+    private final String dbPath = "/data/data/com.example.trippe/databases/TrippeDatabase";
     public CurrencyDao() {
-
     }
-    //TODO CHANGE TO ARRAY MAYBE AND ACTUALLY RETURN DATA
-    public DataPoint[] getCurrencyHistory(String startDate, String endDate, String toCurrency, String fromCurrency) {
+
+    public TrippeCurrency getCurrencyHistory(String startDate, String endDate, String currency) {
         /* query db for all entries between start and end date for both currencies unless one is usd
         store results in array of TrippeCurrency
         count number of entries
-        sort entries
         figure out missing dates
         get request api for missing dates, if failure, fill with empty data
-        return datapoint array
          */
         SQLiteDatabase db = null;
-        TrippeCurrency[] fromCurrencyArray;
-        TrippeCurrency[] toCurrencyArray;
-        TrippeCurrency _toCurrency = new TrippeCurrency(toCurrency);
-        TrippeCurrency _fromCurrency = new TrippeCurrency(fromCurrency);
-        DataPoint[] dataPoints = {};
+        TrippeCurrency _currency = new TrippeCurrency(currency);
+        Date date;
+
 
         try {
-            db = SQLiteDatabase.openDatabase("/data/data/com.example.trippe/databases/TrippeDatabase", null, 0);
+            db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
 
             try {
                 Cursor cursor = db.rawQuery("SELECT * FROM tbl_daily_rate WHERE tbl_daily_rate.currency_abbrev = '" +
-                        toCurrency +
+                        currency +
                         "' AND tbl_daily_rate.date BETWEEN '" +
                         startDate +
                         "' AND '" +
                         endDate + "' ORDER BY tbl_daily_rate.date ASC;", null);
-                //Log.i("getCurrencyHistory", "Query: '" + )
-                Log.i("getCurrencyHistory", "Got " + String.valueOf(cursor.getCount()) + " entries");
+                Log.i("getCurrencyHistory", "Got " + cursor.getCount() + " entries for " + currency);
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
                     Log.i("getCurrencyHistory:", cursor.getString(cursor.getColumnIndex("date")) + " | " +
                             cursor.getString(cursor.getColumnIndex("currency_abbrev")) + " | " +
                             cursor.getString(cursor.getColumnIndex("exchange_rate")));
+                            // Now to do the actual work:
+                            date = this.getDateFromString(cursor.getString(cursor.getColumnIndex("date")));
+                            _currency.addRate(date, cursor.getDouble(cursor.getColumnIndex("exchange_rate")));
                     cursor.moveToNext();
                 }
             } catch (Exception e) {
@@ -60,23 +61,114 @@ public class CurrencyDao {
             } finally {
                 db.close();
             }
-            return dataPoints;
+            return _currency;
         } catch (Exception e) {
             Log.e("getCurrencyHistory openDatabase", e.toString(), e);
 
         }
-        return dataPoints;
+        return _currency;
     }
 
-    public void insertRate(String currency, double rate, String date) {
-        /* query db for all entries between start and end date for both currencies unless one is usd
+    /*public double convertCurrency(String fromCurrency, String toCurrency) {
+        /query db for all entries between start and end date for both currencies unless one is usd
         store results in array of TrippeCurrency
         count number of entries
-        sort entries
         figure out missing dates
         get request api for missing dates, if failure, fill with empty data
-        return datapoint array
-         */
+
+        SQLiteDatabase db = null;
+        TrippeCurrency _currency = new TrippeCurrency(currency);
+        Date date;
+
+
+        try {
+            db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
+
+            try {
+                Cursor cursor = db.rawQuery("SELECT * FROM tbl_daily_rate WHERE tbl_daily_rate.currency_abbrev = '" +
+                        currency +
+                        "' AND tbl_daily_rate.date = " +
+                        WebAPIRequest.getTodaysDate() +
+                        ";", null);
+                Log.i("getCurrencyHistory", "Got " + cursor.getCount() + " entries for " + currency);
+                cursor.moveToFirst();
+                while (!cursor.isAfterLast()) {
+                    Log.i("getCurrencyHistory:", cursor.getString(cursor.getColumnIndex("date")) + " | " +
+                            cursor.getString(cursor.getColumnIndex("currency_abbrev")) + " | " +
+                            cursor.getString(cursor.getColumnIndex("exchange_rate")));
+                    // Now to do the actual work:
+                    date = this.getDateFromString(cursor.getString(cursor.getColumnIndex("date")));
+                    _currency.addRate(date, cursor.getDouble(cursor.getColumnIndex("exchange_rate")));
+                    cursor.moveToNext();
+                }
+            } catch (Exception e) {
+                Log.e("getCurrencyHistory sql query", e.toString(), e);
+                if (db.isOpen()) { // probably redundant
+                    db.close();
+                }
+            } finally {
+                db.close();
+            }
+            return _currency;
+        } catch (Exception e) {
+            Log.e("getCurrencyHistory openDatabase", e.toString(), e);
+
+        }
+        return _currency;
+    }
+*/
+    public double selectCurrencyRate(String date, String currency){
+        SQLiteDatabase db = null;
+        double rate = 0.0;
+        int daysAgo = 0;
+        try {
+            db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
+            if (WebAPIRequest.invalidDate(date)) {
+                date = WebAPIRequest.getTodaysDate();
+            }
+
+            while (rate == 0) {
+                String query = "SELECT * FROM tbl_daily_rate WHERE tbl_daily_rate.currency_abbrev = '" +
+                        currency +
+                        "' AND tbl_daily_rate.date = '" +
+                        date +
+                        "';";
+                try {
+                    Log.i("selectCurrencyRate", "Query: " + query);
+                    Cursor cursor = db.rawQuery(query, null);
+                    Log.i("selectCurrencyRate", "Got " + cursor.getCount() + " entries for " + currency);
+                    cursor.moveToFirst();
+                    while (!cursor.isAfterLast()) {
+                        Log.i("selectCurrencyRate", cursor.getString(cursor.getColumnIndex("date")) + " | " +
+                                cursor.getString(cursor.getColumnIndex("currency_abbrev")) + " | " +
+                                cursor.getString(cursor.getColumnIndex("exchange_rate")));
+                        // now do the actual work:
+                        rate = cursor.getDouble(cursor.getColumnIndex("exchange_rate"));
+                        cursor.moveToNext();
+                    }
+                } catch (Exception e) {
+                    Log.e("selectCurrencyRate", e.toString(), e);
+                    if (db.isOpen()) { // probably redundant
+                        db.close();
+                    }
+                }
+                daysAgo++;
+                date = WebAPIRequest.getDateAgo(daysAgo);
+            }
+            if (db.isOpen()) {
+                db.close();
+            }
+            Log.i("selectCurrencyRate", "days Ago: " + (daysAgo - 1));
+            return rate;
+        } catch (Exception e) {
+            Log.e("selectCurrencyRate", e.toString(), e);
+
+        }
+        return rate;
+    }
+
+
+    public void insertRate(String currency, double rate, String date) {
         SQLiteDatabase db  = null;
         long rowId = 0;
         ContentValues tblRow = new ContentValues();
@@ -85,7 +177,7 @@ public class CurrencyDao {
         tblRow.put("date", date);
 
         try {
-            db = SQLiteDatabase.openDatabase("/data/data/com.example.trippe/databases/TrippeDatabase", null, 0);
+            db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
 
             try {
                 rowId = db.insert("tbl_daily_rate", "", tblRow);
@@ -103,7 +195,7 @@ public class CurrencyDao {
     }
         //String get currency abbrev by country name (string country name)
 
-    public void updateHistory() {
+    public void updateHistory(int daysAgo) {
         /* check latest db dates
         compare to now
         get missing days
@@ -111,6 +203,18 @@ public class CurrencyDao {
         fill in days with no data
         update previous missing days
          */
+        WebAPIRequest request = new WebAPIRequest();
+        request.setUrl("USD", request.getDateAgo(daysAgo), request.getTodaysDate());
+        Log.i("updateHistory", "Calling getHistoryAsMap");
+        Map<String, TrippeCurrency> currencyMap;
+        currencyMap = request.getHistoryAsMap();
+        for (String currency : currencyMap.keySet()) {
+            Map<Date, Double> rates = currencyMap.get(currency).getRates();
+            for (Date date : rates.keySet()){
+                Log.i("updateHistory", "Inserting: " + currency + " " + rates.get(date) + " " + this.getStringFromDate(date));
+                this.insertRate(currency, rates.get(date), this.getStringFromDate(date));
+            }
+        }
     }
 
     public void makeTableRates(boolean overwrite) {
@@ -119,7 +223,7 @@ public class CurrencyDao {
 
         // create tbl_daily_rate
         try {
-            db = SQLiteDatabase.openDatabase("/data/data/com.example.trippe/databases/TrippeDatabase", null, 0);
+            db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
             try {
                 if (overwrite) {
                     db.execSQL("DROP TABLE IF EXISTS tbl_daily_rate");
@@ -149,5 +253,25 @@ public class CurrencyDao {
     }
     public void replaceEntry(){
 
+    }
+
+    public Date getDateFromString(String inDate) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        try {
+            date = df.parse(inDate);
+            return date;
+        } catch (ParseException e) {
+            Log.w("getDateFromString", "Date: " + inDate + " is invalid");
+            date = new Date();
+            return date;
+        }
+    }
+
+    public String getStringFromDate(Date date) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String strDate;
+        strDate = df.format(date);
+        return strDate;
     }
 }

@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.trippe.R;
+import com.example.trippe.dao.CurrencyDao;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -39,11 +40,11 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     private TextView txtResult;
     private ImageView imgFromFlag;
     private ImageView imgToFlag;
-    private long now;
-    private long ago;
+    private long now;// TODO REMOVE
+    private long ago; // TODO REMOVE
     // How many milliseconds in 1 day
-    private final long DAY_IN_MILLIS = 86400000;
-    private SimpleDateFormat formatter;
+    private final long DAY_IN_MILLIS = 86400000; // TODO REMOVE
+    private SimpleDateFormat formatter; // TODO REMOVE
     private GraphView currencyGraph;
     private LineGraphSeries<DataPoint> series;
 
@@ -89,9 +90,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         this.dropToCurrency.setOnItemSelectedListener(this);
         this.txtFromAmount.addTextChangedListener(txtFromAmountWatcher);
 
-        //Format needed for web api query
-        this.formatter = new SimpleDateFormat("yyyy-MM-dd");
-
         //------------------------------------------
         // The following block sets up our list of items to populate into the dropdown menus
         //------------------------------------------
@@ -105,6 +103,8 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         for (i = 0; i < this.currencyOptions.length; i++) {
             options.add(this.currencyOptions[i]);
         }
+
+
 
         // Creating adapter for spinner
         ArrayAdapter<String> currencyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, options);
@@ -171,7 +171,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         }
     }
 
-
     private void processFormInput() {
         // set our containers to hold ui element data
         String fromCurrency = "";
@@ -180,7 +179,8 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         String strFromAmount = this.txtFromAmount.getText().toString();
         Log.w("processFormInput", String.valueOf(strFromAmount.length()));
         DecimalFormat decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMaximumFractionDigits(4);
+        CurrencyDao currencyDao = new CurrencyDao();
 
         try {
             fromCurrency = this.dropFromCurrency.getSelectedItem().toString().substring(0, 3);  // needed to parse out just the currency abbreviation
@@ -203,27 +203,21 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
                 } else if (fromCurrency.equals(toCurrency)) { // make sure the source and destination arent the same
                     this.txtResult.setText(decimalFormat.format(fromAmount));
                 } else {
-                    this.now = System.currentTimeMillis(); // current time in ms
-                    this.ago = now - 10 * DAY_IN_MILLIS; // 10 days ago
-
-                    String strNow = this.formatter.format(new Date(this.now));
-                    String strAgo = this.formatter.format(new Date(this.ago));
-
-                    Log.w("Current Date", strNow);
-                    Log.w("10 days ago", strAgo);
-
-                    WebAPIRequest apiRequest = new WebAPIRequest();
-                    apiRequest.setUrl(fromCurrency, toCurrency);
-                    //TrippeCurrency currency = apiRequest.getLatestAsTrippeCurrency();
-                    double rate = apiRequest.getLatestRate();
-
-                    //TODO WEB API REQUEST/DB QUERY
+                        // TODO implement graph currencyDao.getCurrencyHistory()
+                        double fromRate = currencyDao.selectCurrencyRate("", fromCurrency);
+                        double toRate = currencyDao.selectCurrencyRate("", toCurrency);
+                        Log.i("processFormInput", "to:" + toRate + " from:" + fromRate);
+                        if (toRate > 0) {
+                            double rate = fromRate * toRate;
+                            this.txtResult.setText(decimalFormat.format(rate * fromAmount));
+                        } else {
+                            this.txtResult.setText("");
+                        }
                     /*
                     CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), toCurrency, fromCurrency);
                     currencyQuery.setSourceAmount(fromAmount);
                     currencyQuery.getRequestLatest();*/
 
-                    this.txtResult.setText(decimalFormat.format(rate * fromAmount));
 
                     //LineGraphSeries<DataPoint> updateSeries = new LineGraphSeries<DataPoint>((DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
                     //this.currencyGraph.addSeries(updateSeries);

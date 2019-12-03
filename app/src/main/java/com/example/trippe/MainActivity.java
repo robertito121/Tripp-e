@@ -92,17 +92,8 @@ public class MainActivity extends AppCompatActivity {
         finally {
             trippeDatabase.close();
         }
-        // TODO try to update db with currency history
         CurrencyDao currencyDao = new CurrencyDao();
         currencyDao.makeTableRates(false);
-        // insert some junk data to test
-        currencyDao.insertRate("USD", 1, "2019-10-10");
-        currencyDao.insertRate("USD", 2, "2019-10-11");
-        currencyDao.insertRate("USD", 1.22, "2019-11-19");
-        currencyDao.insertRate("USD", 1.22, "2019-11-11");
-        currencyDao.insertRate("USD", 2.22, "2019-11-12");
-        currencyDao.insertRate("USD", 1.42, "2019-11-14");
-        currencyDao.insertRate("USD", 1.42, "2019-11-13");
-        currencyDao.getCurrencyHistory("2019-11-10", "2019-11-20", "USD", "CAD");
+        currencyDao.updateHistory(10);
     }
 }

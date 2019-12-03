@@ -1,6 +1,7 @@
 package com.example.trippe.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class TrippeCurrency {
@@ -11,19 +12,19 @@ public class TrippeCurrency {
     private String country;
 
     public TrippeCurrency() {
-
+        this.rates = new HashMap();
     }
 
     public TrippeCurrency(String abbreviation ) {
         this.abbreviation = abbreviation;
+        this.rates = new HashMap();
+
     }
 
     public TrippeCurrency(String abbreviation, String name) {
         this.abbreviation = abbreviation;
         this.name = name;
-    }
-
-    public void sortDates() {
+        this.rates = new HashMap();
 
     }
 
@@ -47,7 +48,13 @@ public class TrippeCurrency {
         this.rates.put(date, rate);
     }
 
+    public Map<Date, Double> getRates() {
+        return rates;
+    }
+
     public void setAbbreviation(String abbrev){
         this.abbreviation = abbrev;
     }
+
+
 }
