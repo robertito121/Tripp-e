@@ -122,12 +122,13 @@ public class CurrencyDao {
         SQLiteDatabase db = null;
         double rate = 0.0;
         int daysAgo = 0;
+        int maxAge = 5;
         try {
             db = SQLiteDatabase.openDatabase(this.dbPath, null, 0);
             if (WebAPIRequest.invalidDate(date)) {
                 date = Utility.getTodaysDate();           }
 
-            while (rate == 0) {
+            while (rate == 0 && daysAgo < maxAge) {
                 String query = "SELECT * FROM tbl_daily_rate WHERE tbl_daily_rate.currency_abbrev = '" +
                         currency +
                         "' AND tbl_daily_rate.date = '" +
