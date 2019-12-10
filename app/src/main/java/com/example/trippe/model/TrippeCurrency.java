@@ -2,6 +2,7 @@ package com.example.trippe.model;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class TrippeCurrency {
@@ -38,6 +39,22 @@ public class TrippeCurrency {
 
     public String getCountry() {
         return this.country;
+    }
+
+    public Iterator<Date> keys() {
+        return this.rates.keySet().iterator();
+    }
+
+    public double getRate(Date date) {
+        double rate = 0;
+        if (rates.containsKey(date)) {
+            return rates.get(date);
+        }
+        return rate;
+    }
+
+    public Integer getSize() {
+        return this.rates.size();
     }
 
     public long getFlagResourceId(){

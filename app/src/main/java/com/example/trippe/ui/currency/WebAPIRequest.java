@@ -1,5 +1,6 @@
 package com.example.trippe.ui.currency;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.trippe.model.TrippeCurrency;
@@ -25,7 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public class WebAPIRequest {
+public class WebAPIRequest  {
     private String strUrl;
 
     public WebAPIRequest() {
@@ -203,6 +204,8 @@ public class WebAPIRequest {
         }
         try {
             request = (HttpURLConnection) url.openConnection();
+            request.setReadTimeout(20000);
+            request.setConnectTimeout(20000);
             request.setRequestMethod("GET"); // GET request is needed for this api
             InputStream inputStream = request.getInputStream(); // connect and get a stream of data
 

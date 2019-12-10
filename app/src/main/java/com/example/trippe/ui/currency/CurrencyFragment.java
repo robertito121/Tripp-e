@@ -19,12 +19,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.trippe.R;
 import com.example.trippe.dao.CurrencyDao;
+import com.example.trippe.model.TrippeCurrency;
 import com.example.trippe.util.Utility;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.achartengine.GraphicalView;
+import org.achartengine.chart.PointStyle;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class CurrencyFragment extends Fragment implements Spinner.OnItemSelectedListener { // OnClickListener
@@ -40,7 +50,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     private ImageView imgToFlag;
     private GraphView currencyGraph;
     private LineGraphSeries<DataPoint> series;
-
 
     private final TextWatcher txtFromAmountWatcher = new TextWatcher() {
         @Override
@@ -97,6 +106,10 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
             options.add(this.currencyOptions[i]);
         }
 
+        // update our rates in the database
+        // TODO make this a little smarter maybe?
+        new AsyncRateRequest().execute();
+
 
 
         // Creating adapter for spinner
@@ -118,9 +131,13 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         //-------------------------------------------
         // Testing a graph of currency histories
         //-------------------------------------------
+        // populate our data
         this.currencyGraph = (GraphView) view.findViewById(R.id.currencyGraph);
         this.currencyGraph.setTitle("10 Day History");
-        this.series = new LineGraphSeries<DataPoint>();/*new DataPoint[] {
+        this.series = new LineGraphSeries<DataPoint>();
+        this.setCurrencyGraph();
+
+        /*new DataPoint[] {
                 new DataPoint(-10, 0),
                 new DataPoint(-9, 0),
                 new DataPoint(-8, 0),
@@ -134,7 +151,7 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
                 new DataPoint(0, 0)
         });*/
 
-        this.currencyGraph.addSeries(series);
+       // this.currencyGraph.addSeries(series);
         return view;
     }
 
@@ -152,6 +169,39 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         } catch (Exception e) {
             Log.e("setFlag", e.toString(), e);
         }
+    }
+
+
+    private void setCurrencyGraph() {
+        TrippeCurrency fromCurrency;
+        TrippeCurrency toCurrency;
+        CurrencyDao currencyDao = new CurrencyDao();
+        String ago = Utility.getDateAgo(10);
+        String now = Utility.getTodaysDate();
+        DataPoint rate[] = new DataPoint[10];
+
+        toCurrency = currencyDao.getCurrencyHistory(ago, now, this.dropToCurrency.getSelectedItem().toString().substring(0, 3));
+        fromCurrency = currencyDao.getCurrencyHistory(ago, now, this.dropFromCurrency.getSelectedItem().toString().substring(0, 3));
+        String entry;
+        Iterator toDates = toCurrency.keys();
+        Date dates[] = new Date[10];
+        // Generate dates:
+        int y = 0;
+        for (int x = 9; x >= 0; x--) {
+            dates[y] = Utility.getDateAgoAsDate(x);
+            Log.i("Dates", "Date: " + y + " " + dates[y]);
+            y++;
+        }
+        while(toDates.hasNext()) {
+            //entry = String.valueOf(toCurrency.getRate(toDates.next()));
+            Log.i("Iterator", "toCurrency" + toDates.next());
+        }
+
+        /*for (int x = 0; x < 10; x++) {
+
+            rate[x] =
+        }*/
+
     }
 
     private void processFormInput() {

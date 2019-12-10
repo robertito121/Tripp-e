@@ -98,4 +98,25 @@ public class Utility {
         }
         return strAgo;
     }
+
+
+    /**
+     * this method is used to get the current date 'daysAgo' number of days ago as a
+     * string in the format yyyy-MM-dd
+     * in order to interface with the database or CurrencyDao and/or WebAPIRequest classes
+     * @param daysAgo
+     * @return date 'daysAgo' as a String
+     */
+    public static Date getDateAgoAsDate(int daysAgo){
+        long DAY_IN_MILLIS = 86400000; // one day in milliseconds
+        Long now = System.currentTimeMillis(); // current time in ms
+        long ago = now - daysAgo * DAY_IN_MILLIS; // calculate date 10 days ago
+        Date dateAgo = new Date();
+        try {
+            dateAgo = new Date(ago);
+        } catch (Exception e) {
+            Log.e("getDateAgo", e.toString(), e);
+        }
+        return dateAgo;
+    }
 }
