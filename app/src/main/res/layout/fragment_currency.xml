@@ -80,10 +80,12 @@
         android:textColor="#FFFFFF"/>
 
     <com.jjoe64.graphview.GraphView
+        android:id="@+id/currencyGraph"
         android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:layout_below="@id/txtResult"
-        android:id="@+id/currencyGraph" />
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_height="250dip"
+        android:layout_below="@id/txtResult" />
 
 
 
