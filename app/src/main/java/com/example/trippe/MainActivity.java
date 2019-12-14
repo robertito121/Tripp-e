@@ -31,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //TODO Remove this and implement a threaded query for web stuff
-        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        //StrictMode.setThreadPolicy(policy);
-
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             // No permissions lets request them
