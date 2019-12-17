@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.trippe.R;
+import com.example.trippe.util.Utility;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -144,16 +145,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         this.currencyGraph.addSeries(series);
         return view;
     }
-    // this is used to get our resource id via a string so we can set our flag icons by name
-    public int getResId(String resName, Class<?> c) {
-        try {
-            Field idField = c.getDeclaredField(resName);
-            return idField.getInt(idField);
-        } catch (Exception e) {
-            Log.e("setFlag", e.toString(), e);
-            return -1;
-        }
-    }
 
     private void setFlag(ImageView imgView, String currency) {
         // TODO pull flag name based on currency from db
@@ -162,7 +153,7 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
 
         // now try to set our icon
         try {
-            int resourceId = getResId(flagName, R.drawable.class); // use some fancy reflection to get our image name via string
+            int resourceId = Utility.getResourceIndicatorByString(flagName, R.drawable.class); // use some fancy reflection to get our image name via string
             if (resourceId != -1) {
                 imgView.setImageResource(resourceId);
             }
