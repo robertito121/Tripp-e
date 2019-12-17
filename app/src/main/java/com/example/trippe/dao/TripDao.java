@@ -120,4 +120,24 @@ public class TripDao {
         }
         return tripIdExists;
     }
+
+    public boolean removeTrip(Trip tripToBeRemoved) {
+        boolean isRemoved = false;
+        try {
+            db = getConnection();
+            int success =  db.delete("Trips", "tripId=?", new String[] {tripToBeRemoved.getTripId()});
+            if (success == 1) {
+                isRemoved = true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            db.close();
+        }
+        return isRemoved;
+
+
+    }
 }
