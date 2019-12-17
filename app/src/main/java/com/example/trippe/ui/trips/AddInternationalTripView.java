@@ -14,10 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.trippe.MainActivity;
 import com.example.trippe.R;
+import com.example.trippe.dao.CalendarDao;
 import com.example.trippe.dao.TripDao;
 import com.example.trippe.model.Location;
 import com.example.trippe.model.Trip;
 import com.example.trippe.util.Utility;
+import com.example.trippe.model.Event;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -28,6 +30,7 @@ public class AddInternationalTripView extends AppCompatActivity {
     private EditText startDateTextField;
     private EditText endDateTextField;
     private Spinner countrySpinner;
+    private CalendarDao calendarDao;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class AddInternationalTripView extends AppCompatActivity {
                 String[] languages = {"English", "Spanish"};
                 Trip newTrip = new Trip(tripId, startDate, endDate, internationalLocation, 0, TimeZone.getTimeZone("EST"), "USD", languages);
                 TripDao tripDao = new TripDao();
+                //addTripEvents(startDate, endDate, newTrip);
                 boolean isAddedToDatabase =  tripDao.addTrip(newTrip);
                 if (isAddedToDatabase == true) {
                     Intent intent = new Intent(this, MainActivity.class);
@@ -103,4 +107,15 @@ public class AddInternationalTripView extends AppCompatActivity {
         }, year, month, day);
         datePicker.show();
     }
+
+    private void addTripEvents(String startDate, String endDate, Trip trip) {
+        String date = startDate;
+        do {
+            String eventID = Integer.toString(Utility.generateEventId() + calendarDao.getEvents().size());
+            calendarDao.addEvent(new Event(eventID, date, "12:00 AM", "11:59 PM",
+                    trip.internationalTripToString() + " Trip", trip.internationalTripToString(), trip.internationalTripToString()));
+            calendarDao.nextDay(date);
+        } while(date != endDate);
+    }
+
 }

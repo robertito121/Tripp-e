@@ -13,6 +13,7 @@ public class Utility {
     /**
      * generates a random Trip Id using a given prefix pattern (either NT for nationalTrip or
      * IT for internationalTrip)
+     *
      * @param prefixPattern
      * @return the tripId as String
      */
@@ -24,8 +25,7 @@ public class Utility {
             Integer randomInteger = ThreadLocalRandom.current().nextInt();
             if (randomInteger.toString().contains("-")) {
                 tripId = prefixPattern + randomInteger;
-            }
-            else {
+            } else {
                 tripId = prefixPattern + "-" + randomInteger;
             }
             //checking whether tripId is already in use otherwise generate another tripId
@@ -40,10 +40,13 @@ public class Utility {
     public static Integer generateEventId() {
         Integer randomInteger = ThreadLocalRandom.current().nextInt();
         return randomInteger;
+    }
+
 
     /**
      * this method is used to get any resource indicator using a string
      * in order to facilitate the pulling of resources into multiple classes
+     *
      * @param resourceName
      * @param anyClass
      * @return the resource id as int
@@ -58,3 +61,4 @@ public class Utility {
         }
     }
 }
+

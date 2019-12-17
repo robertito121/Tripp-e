@@ -118,4 +118,65 @@ public class CalendarDao {
         return getEvents().get(position);
     }
 
+    public String nextDay(String date) {
+        int month = Integer.parseInt(date.substring(0,2));
+        int day = Integer.parseInt(date.substring(3,5));
+        int year = Integer.parseInt(date.substring(6,8));
+        String newMonth;
+        String newDay;
+        if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8
+                || month == 10 || month == 12) {
+            if(day == 31) {
+                day = 1;
+                month++;
+            } else {
+                day++;
+            }
+        } else if (month == 4 || month == 6 || month == 9  || month == 11) {
+            if(day == 30) {
+                day = 1;
+                month++;
+            } else {
+                day++;
+            }
+        } else if (month == 2 && year%4 == 0) {
+            if(day == 29) {
+                day = 1;
+                month++;
+            } else {
+                day++;
+            }
+        } else {
+            if(day == 28) {
+                day = 1;
+                month++;
+            } else {
+                day++;
+            }
+        }
+
+        if (month > 11) {
+            month = 1;
+            year++;
+        } else {
+            month++;
+        }
+
+        if(day < 10) {
+            newDay = "0" + String.valueOf(day);
+        } else {
+            newDay = String.valueOf(day);
+        }
+
+        if(month < 10) {
+            newMonth = "0" + String.valueOf(month);
+        } else {
+            newMonth = String.valueOf(month);
+        }
+
+        String nextDay = newMonth + "/" + newDay + "/" + year;
+
+        return nextDay;
+    }
+
 }

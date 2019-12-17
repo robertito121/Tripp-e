@@ -177,24 +177,23 @@ public class AddEventView extends AppCompatActivity {
         tripNames.add("Select a Trip");
 
         try {
+            db = getConnection();
             Cursor cursor = db.rawQuery("select * from Trips", null);
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 String tripId = cursor.getString(cursor.getColumnIndex("tripId"));
-                int tripFlagIndicator = cursor.getInt(cursor.getColumnIndex("tripFlagIndicator"));
                 String startDate = cursor.getString(cursor.getColumnIndex("startDate"));
                 String endDate = cursor.getString(cursor.getColumnIndex("endDate"));
                 String city = cursor.getString(cursor.getColumnIndex("destinationCity"));
                 String state = cursor.getString(cursor.getColumnIndex("destinationState"));
-                int zipCode = cursor.getInt(cursor.getColumnIndex("destinationZipCode"));
                 String country = cursor.getString(cursor.getColumnIndex("destinationCountry"));
                 int milesAwayFromHome = cursor.getInt(cursor.getColumnIndex("milesAwayFromHome"));
                 TimeZone timeZone = TimeZone.getTimeZone(cursor.getString(cursor.getColumnIndex("timeZone")));
-                Location location = new Location(city, state,zipCode,country);
+                Location location = new Location(city, state,country);
                 String currency = cursor.getString(cursor.getColumnIndex("currency"));
                 String languagesString = cursor.getString(cursor.getColumnIndex("languages"));
                 String[] languages = languagesString.split(",");
-                Trip trip = new Trip(tripId, tripFlagIndicator, startDate, endDate, location, milesAwayFromHome,timeZone,currency,languages);
+                Trip trip = new Trip(tripId, startDate, endDate, location, milesAwayFromHome,timeZone,currency,languages);
                 trips.add(trip);
                 cursor.moveToNext();
             }
