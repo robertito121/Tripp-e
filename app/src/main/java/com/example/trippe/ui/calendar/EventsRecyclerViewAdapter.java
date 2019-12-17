@@ -14,10 +14,16 @@ import java.util.List;
 
 public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsViewHolder> {
 
-    private List<? extends Event> events;
+    public interface EventClickListener {
+        void onItemClick(Event event);
+    }
 
-    public EventsRecyclerViewAdapter(List<Event> events){
+    private List<? extends Event> events;
+    private final EventClickListener listener;
+
+    public EventsRecyclerViewAdapter(List<Event> events, EventClickListener listener){
         this.events = events;
+        this.listener = listener;
     }
 
     @NonNull
@@ -34,6 +40,7 @@ public class EventsRecyclerViewAdapter extends RecyclerView.Adapter<EventsViewHo
             Event event = events.get(position);
             holder.getName().setText(event.getName());
             holder.getTime().setText(event.getTime());
+            holder.bind(events.get(position), listener);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

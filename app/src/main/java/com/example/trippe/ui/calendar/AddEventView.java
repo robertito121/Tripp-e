@@ -1,5 +1,6 @@
 package com.example.trippe.ui.calendar;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.trippe.MainActivity;
 import com.example.trippe.R;
@@ -44,6 +47,7 @@ public class AddEventView extends AppCompatActivity {
     private Button cancelButton;
     private CheckBox allDayCheckBox;
     private SQLiteDatabase db;
+    private Activity activity_add_event = this;
 
 
     public AddEventView() {
@@ -73,13 +77,8 @@ public class AddEventView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    //startActivity(new Intent(v.getContext(), MainActivity.class));
-                    relativeLayout.setVisibility(View.GONE);
-                    CalendarFragment fragment = new CalendarFragment();
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.contaner, fragment);
-
-                    transaction.commit();
+                    NavController navController = Navigation.findNavController(activity_add_event, R.id.nav_host_fragment);
+                    navController.navigate(R.id.navigation_dashboard);
 
                 } catch (ActivityNotFoundException e) {
                     e.printStackTrace();
@@ -112,7 +111,8 @@ public class AddEventView extends AppCompatActivity {
                     boolean isAddedToDatabase = calendarDao.addEvent(newEvent);
                     if (isAddedToDatabase == true) {
                         System.out.println("Event: " + eventName);
-                        startActivity(new Intent(v.getContext(), MainActivity.class));
+                        NavController navController = Navigation.findNavController(activity_add_event, R.id.nav_host_fragment);
+                        navController.navigate(R.id.navigation_dashboard);
                     }
                 }
                 catch (NullPointerException e) {

@@ -114,4 +114,8 @@ public class CalendarDao {
         return events;
     }
 
+    public Event getEvent(int position) {
+        return getEvents().get(position);
+    }
+
 }

@@ -41,6 +41,8 @@ public class CalendarFragment extends Fragment {
     private View view;
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> events;
+    private Event activeEvent;
+    private ArrayList<Event> listOfEvents;
 
     public CalendarFragment() {
         database = getConnection();
@@ -59,15 +61,6 @@ public class CalendarFragment extends Fragment {
         eventDate.setText(date);
 
         fillEventTable(view, date);
-
-        eventsRecyclerView = view.findViewById(R.id.eventsList);
-        eventsRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        eventsRecyclerView.setLayoutManager(layoutManager);
-        CalendarDao calendarDao = new CalendarDao();
-        events = calendarDao.getEvents(date);
-        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events);
-        eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
 
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -104,15 +97,29 @@ public class CalendarFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    private void fillEventTable(View view, String selectedDate) {
+    private void fillEventTable(final View view, String selectedDate) {
         eventsRecyclerView = view.findViewById(R.id.eventsList);
         eventsRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         eventsRecyclerView.setLayoutManager(layoutManager);
-        CalendarDao calendarDao = new CalendarDao();
+        final CalendarDao calendarDao = new CalendarDao();
         events = calendarDao.getEvents(selectedDate);
-        System.out.println(events);
-        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events);
+        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events, new EventsRecyclerViewAdapter.EventClickListener() {
+            @Override
+            public void onItemClick(Event event) {
+                listOfEvents = calendarDao.getEvents();
+                int eventPostion = 0;
+                for(int a = 0; a < listOfEvents.size(); a ++) {
+                    if(event.getEventID().equals(listOfEvents.get(a).getEventID())) {
+                        eventPostion = a;
+                    }
+                }
+                Intent intent = new Intent(view.getContext(), EventView.class);
+                intent.putExtra("EventPosition", eventPostion);
+                startActivity(intent);
+            }
+        });
+
         eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
     }
 

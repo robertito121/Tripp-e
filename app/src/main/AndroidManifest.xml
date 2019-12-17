@@ -24,6 +24,7 @@
         <activity android:name=".ui.trips.AddInternationalTrip"></activity>
         <activity android:name=".ui.calendar.AddEventView"></activity>
         <activity android:name=".ui.calendar.CalendarFragmentView"></activity>
+        <activity android:name=".ui.calendar.EventView" />
 
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>

@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trippe.R;
+import com.example.trippe.model.Event;
 
 public class EventsViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,5 +45,13 @@ public class EventsViewHolder extends RecyclerView.ViewHolder {
 
     public void setTime(TextView time) {
         this.time = time;
+    }
+
+    public void bind(final Event event, final EventsRecyclerViewAdapter.EventClickListener listener) {
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(event);
+            }
+        });
     }
 }
