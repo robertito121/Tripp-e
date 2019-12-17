@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsViewHolder> {
 
-    private List<? extends Trip> trips;
+    private List<Trip> trips;
 
     public TripsRecyclerViewAdapter(List<Trip> trips){
         this.trips = trips;
@@ -56,5 +56,11 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsViewHold
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public Trip removeTripAtPosition(int position) {
+        Trip removedTrip = trips.remove(position);
+        notifyItemRemoved(position);
+        return removedTrip;
     }
 }
