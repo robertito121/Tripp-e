@@ -1,6 +1,5 @@
 package com.example.trippe.util;
 
-import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Utility {
@@ -12,10 +11,14 @@ public class Utility {
         Integer randomInteger = ThreadLocalRandom.current().nextInt();
         if (randomInteger.toString().contains("-")) {
             tripId = prefixPattern + randomInteger;
-        }
-        else {
+        } else {
             tripId = prefixPattern + "-" + randomInteger;
         }
         return tripId;
+    }
+
+    public static Integer generateEventId() {
+        Integer randomInteger = ThreadLocalRandom.current().nextInt();
+        return randomInteger;
     }
 }

@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuView;
 import androidx.core.app.ActivityCompat;
@@ -16,6 +18,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import android.database.sqlite.*;
 import android.util.Log;
 import android.view.Menu;
@@ -69,25 +72,32 @@ public class MainActivity extends AppCompatActivity {
         try {
             trippeDatabase = openOrCreateDatabase("TrippeDatabase", MODE_PRIVATE, null);
             //trippeDatabase.execSQL("DROP TABLE IF EXISTS Trips");
-            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " +  "Trips (" +
-                                                                    "tripId VARCHAR(255) NOT NULL, " +
-                                                                    "tripFlagIndicator INT(255) NOT NULL, " +
-                                                                    "destinationCity VARCHAR(255) NOT NULL, " +
-                                                                    "destinationState VARCHAR(255), " +
-                                                                    "destinationZipCode INT(255), " +
-                                                                    "destinationCountry VARCHAR(255) NOT NULL, " +
-                                                                    "startDate VARCHAR(255) NOT NULL, " +
-                                                                    "endDate VARCHAR(255) NOT NULL, " +
-                                                                    "milesAwayFromHome INT NOT NULL, " +
-                                                                    "timeZone VARCHAR(255) NOT NULL, " +
-                                                                    "currency VARCHAR(255) NOT NULL, " +
-                                                                    "languages VARCHAR(255) NOT NULL, " +
-                                                                    "PRIMARY KEY (tripId));");
-        }
-        catch(Exception e){
+            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + "Trips (" +
+                    "tripId VARCHAR(255) NOT NULL, " +
+                    "tripFlagIndicator INT(255) NOT NULL, " +
+                    "destinationCity VARCHAR(255) NOT NULL, " +
+                    "destinationState VARCHAR(255), " +
+                    "destinationZipCode INT(255), " +
+                    "destinationCountry VARCHAR(255) NOT NULL, " +
+                    "startDate VARCHAR(255) NOT NULL, " +
+                    "endDate VARCHAR(255) NOT NULL, " +
+                    "milesAwayFromHome INT NOT NULL, " +
+                    "timeZone VARCHAR(255) NOT NULL, " +
+                    "currency VARCHAR(255) NOT NULL, " +
+                    "languages VARCHAR(255) NOT NULL, " +
+                    "PRIMARY KEY (tripId));");
+            trippeDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + "Events (" +
+                    "eventId VARCHAR(255) NOT NULL, " +
+                    "eventDate VARCHAR(255) NOT NULL, " +
+                    "eventStartTime VARCHAR(255) NOT NULL, " +
+                    "eventEndTime VARCHAR(255) NOT NULL, " +
+                    "eventName VARCHAR(255) NOT NULL, " +
+                    "eventLocation VARCHAR(255) NOT NULL, " +
+                    "tripId VARCHAR(255) NOT NULL, " +
+                    "PRIMARY KEY (eventId));");
+        } catch (Exception e) {
             Log.d("Error: ", e.getMessage());
-        }
-        finally {
+        } finally {
             trippeDatabase.close();
         }
     }

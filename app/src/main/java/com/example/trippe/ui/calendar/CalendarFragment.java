@@ -1,135 +1,142 @@
 package com.example.trippe.ui.calendar;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import com.example.trippe.model.Event;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.trippe.R;
+import com.example.trippe.dao.CalendarDao;
+import com.example.trippe.model.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class CalendarFragment extends Fragment {
 
     private CalendarViewModel calendarViewModel;
+
+    private SQLiteDatabase database;
+
     private static final String TAG = "CalendarActivity";
     private CalendarView mCalendarView;
-    private TableLayout eventTable;
     private TextView eventDate;
-    private TableRow tableHeading;
-    private TextView labelTime;
-    private TextView labelName;
     private View view;
+    private RecyclerView eventsRecyclerView;
+    private ArrayList<Event> events;
 
-    @SuppressLint("ResourceType")
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public CalendarFragment() {
+        database = getConnection();
+    }
+
+    private SQLiteDatabase getConnection() {
+        return SQLiteDatabase.openDatabase("/data/data/com.example.trippe/databases/TrippeDatabase", null, 0);
+    }
+
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         calendarViewModel = ViewModelProviders.of(this).get(CalendarViewModel.class);
         view = inflater.inflate(R.layout.fragment_calendar, container, false);
-        mCalendarView = (CalendarView) view.findViewById(R.id.calendarView);
-        eventDate = (TextView) view.findViewById(R.id.dateText);
-        eventTable = (TableLayout) view.findViewById(R.id.eventTable);
+        mCalendarView = view.findViewById(R.id.calendarView);
+        eventDate = view.findViewById(R.id.dateText);
+        String date = getFormattedDate(mCalendarView.getDate());
+        eventDate.setText(date);
 
-        tableHeading = new TableRow(view.getContext());
-        tableHeading.setId(10);
-        tableHeading.setBackgroundColor(Color.GRAY);
-        tableHeading.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-        labelTime = new TextView(view.getContext());
-        labelTime.setId(20);
-        labelTime.setText("Time");
-        labelTime.setTextColor(Color.BLACK);
-        labelTime.setPadding(5, 5, 5, 5);
-        tableHeading.addView(labelTime);// add the column to the table row here
-        labelName = new TextView(view.getContext());
-        labelName.setId(21);// define id that must be unique
-        labelName.setText("Event"); // set the text for the header
-        labelName.setTextColor(Color.BLACK); // set the color
-        labelName.setPadding(5, 5, 5, 5); // set the padding (if required)
-        tableHeading.addView(labelName); // add the column to the table row here
-        eventTable.addView(tableHeading, new TableLayout.LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.WRAP_CONTENT));
+        fillEventTable(view, date);
 
-        fillEventTable(view, eventTable,mCalendarView.getDate());
-        System.out.println(mCalendarView.getDate());
-        Date date = new Date(mCalendarView.getDate());
-        date.equals(date);
-        System.out.println(new Date(mCalendarView.getDate()));
+        eventsRecyclerView = view.findViewById(R.id.eventsList);
+        eventsRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        eventsRecyclerView.setLayoutManager(layoutManager);
+        CalendarDao calendarDao = new CalendarDao();
+        events = calendarDao.getEvents(date);
+        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events);
+        eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
 
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView CalendarView, int year, int month, int dayOfMonth) {
-                String date = year + "/" + month + "/" + dayOfMonth;
+                String date = getFormattedDate(month, dayOfMonth, year);
+                System.out.println(date);
                 eventDate.setText(date);
                 eventDate.setTextColor(Color.BLACK);
-                eventTable.removeAllViews();
-                fillEventTable(view, eventTable,mCalendarView.getDate());
-                System.out.println(mCalendarView.getDate());
-                System.out.println(new Date(mCalendarView.getDate()));
-                //Log.d(TAG, "onSelectedDayChange: yyyy/mm/dd:" + date);
-
-                /*Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
-                intent.putExtra("date", date);
-                startActivity(intent);*/
+                fillEventTable(view, date);
             }
         });
 
         return view;
     }
 
-    public void fillEventTable(View view, TableLayout eventTable, long selectedDate) {
-        ArrayList<Event> eventList = new ArrayList<>();
-        eventList.add(new Event(selectedDate, "9:00 am", "Go Swimming"));
-        eventList.add(new Event(selectedDate, "10:00 am", "Go Hiking"));
-        eventList.add(new Event(selectedDate, "11:00 am", "Lunch"));
-        int count=0;
-        /*while (cursor.moveToNext()) */for(int a = 0; a < eventList.size(); a++) {
-            if (eventList.get(a).getDate() == selectedDate) {
-                //String eventTime = cursor.getString(2);// get the first variable
-                //String eventName = cursor.getDouble(4);// get the second variable
-                String eventTime = eventList.get(a).getTime();
-                String eventName = eventList.get(a).getName();
-                // Create the table row
-                TableRow tr = new TableRow(view.getContext());
-                if (count % 2 != 0) tr.setBackgroundColor(Color.GRAY);
-                tr.setId(100 + count);
-                tr.setLayoutParams(new TableRow.LayoutParams(
-                        TableRow.LayoutParams.MATCH_PARENT,
-                        TableRow.LayoutParams.WRAP_CONTENT));
-
-                //Create two columns to add as table data
-                // Create a TextView to add date
-                TextView labelTIME = new TextView(view.getContext());
-                labelTIME.setId(200 + count);
-                labelTIME.setText(eventTime);
-                labelTIME.setPadding(2, 0, 5, 0);
-                labelTIME.setTextColor(Color.BLACK);
-                tr.addView(labelTIME);
-                TextView labelNAME = new TextView(view.getContext());
-                labelNAME.setId(200 + count);
-                labelNAME.setText(eventName);
-                labelNAME.setTextColor(Color.BLACK);
-                tr.addView(labelNAME);
-// finally add this to the table row
-                eventTable.addView(tr, new TableLayout.LayoutParams(
-                        TableLayout.LayoutParams.MATCH_PARENT,
-                        TableLayout.LayoutParams.WRAP_CONTENT));
-                count++;
-            }
-        }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.calendar_action_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_addEvent) {
+            Intent intent = new Intent(this.getContext(), AddEventView.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    private void fillEventTable(View view, String selectedDate) {
+        eventsRecyclerView = view.findViewById(R.id.eventsList);
+        eventsRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        eventsRecyclerView.setLayoutManager(layoutManager);
+        CalendarDao calendarDao = new CalendarDao();
+        events = calendarDao.getEvents(selectedDate);
+        System.out.println(events);
+        EventsRecyclerViewAdapter eventsRecyclerViewAdapter = new EventsRecyclerViewAdapter(events);
+        eventsRecyclerView.setAdapter(eventsRecyclerViewAdapter);
+    }
+
+    private String getFormattedDate(long longDate) {
+        Date date=new Date(longDate);
+        SimpleDateFormat df2 = new SimpleDateFormat("MM/dd/yy");
+        return df2.format(date);
+    }
+
+    private String getFormattedDate(int month, int dayOfMonth, int year) {
+        String formattedYear = Integer.toString(year).substring(2,4);
+        String formattedMonth;
+        if(month < 9) {
+            formattedMonth = "0" + (month + 1);
+        } else {
+            formattedMonth = Integer.toString(month + 1);
+        }
+        String formattedDay;
+        if(dayOfMonth < 10) {
+            formattedDay = "0" + dayOfMonth;
+        } else {
+            formattedDay = Integer.toString(dayOfMonth);
+        }
+        return formattedMonth +  "/" + formattedDay + "/" + formattedYear;
+    }
+
 }
