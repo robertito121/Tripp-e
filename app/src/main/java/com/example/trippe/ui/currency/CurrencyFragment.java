@@ -1,6 +1,5 @@
 package com.example.trippe.ui.currency;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,13 +17,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.trippe.R;
+import com.example.trippe.dao.CurrencyDao;
 import com.example.trippe.util.Utility;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,14 +39,7 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     private TextView txtResult;
     private ImageView imgFromFlag;
     private ImageView imgToFlag;
-    private long now;
-    private long ago;
-    // How many milliseconds in 1 day
-    private final long DAY_IN_MILLIS = 86400000;
-    private SimpleDateFormat formatter;
     private GraphView currencyGraph;
-    private LineGraphSeries<DataPoint> series;
-
 
     private final TextWatcher txtFromAmountWatcher = new TextWatcher() {
         @Override
@@ -90,9 +82,6 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         this.dropToCurrency.setOnItemSelectedListener(this);
         this.txtFromAmount.addTextChangedListener(txtFromAmountWatcher);
 
-        //Format needed for web api query
-        this.formatter = new SimpleDateFormat("yyyy-MM-dd");
-
         //------------------------------------------
         // The following block sets up our list of items to populate into the dropdown menus
         //------------------------------------------
@@ -106,6 +95,12 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         for (i = 0; i < this.currencyOptions.length; i++) {
             options.add(this.currencyOptions[i]);
         }
+
+        // update our rates in the database
+        // TODO make this a little smarter maybe?
+        new AsyncRateRequest().execute();
+
+
 
         // Creating adapter for spinner
         ArrayAdapter<String> currencyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, options);
@@ -126,23 +121,10 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         //-------------------------------------------
         // Testing a graph of currency histories
         //-------------------------------------------
+        // populate our data
         this.currencyGraph = (GraphView) view.findViewById(R.id.currencyGraph);
         this.currencyGraph.setTitle("10 Day History");
-        this.series = new LineGraphSeries<DataPoint>();/*new DataPoint[] {
-                new DataPoint(-10, 0),
-                new DataPoint(-9, 0),
-                new DataPoint(-8, 0),
-                new DataPoint(-7, 0),
-                new DataPoint(-6, 0),
-                new DataPoint(-5, 0),
-                new DataPoint(-4, 0),
-                new DataPoint(-3, 0),
-                new DataPoint(-2, 0),
-                new DataPoint(-1, 0),
-                new DataPoint(0, 0)
-        });*/
 
-        this.currencyGraph.addSeries(series);
         return view;
     }
 
@@ -163,6 +145,58 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
     }
 
 
+    private void setCurrencyGraph() {
+        CurrencyDao currencyDao = new CurrencyDao();
+        int entries = 11;
+        // our data to be returned to graph
+        LineGraphSeries rateSeries = new LineGraphSeries<DataPoint>();
+        rateSeries.setDrawDataPoints(true);
+        String from = this.getDropdownValue(this.dropFromCurrency);
+        String to = this.getDropdownValue(this.dropToCurrency);
+        rateSeries.setTitle(from + " -> " + to);
+
+        // local variables for conversions
+        Double fromRate[] = new Double[entries];
+        Double toRate[] = new Double[entries];
+        Date dates[] = new Date[entries];
+        double calculatedRate = 0;
+
+        // Generate dates:
+        int y = 0;
+        for (int x = entries - 1; x >= 0; x--) {
+            dates[y] = Utility.getDateAgoAsDate(x);
+            Log.i("Dates", "Date: " + y + " " + dates[y]);
+            y++;
+        }
+
+        if (from.equals(to)) {
+            for (int x = 0; x < entries; x++) {
+                rateSeries.appendData(new DataPoint(x, 1.0), true, entries);
+            }
+        } else {
+            // get rates for to and from currencies for a given day
+            for (int x = 0; x < entries; x++) {
+                fromRate[x] = currencyDao.selectCurrencyRate(currencyDao.getStringFromDate(dates[x]), from);
+                toRate[x] = currencyDao.selectCurrencyRate(currencyDao.getStringFromDate(dates[x]), to);
+                calculatedRate = (1/fromRate[x]) * toRate[x];
+                Log.i("Rates", "Day: " + x + " From: " + from + " To: " + to + " = " + calculatedRate);
+                rateSeries.appendData(new DataPoint(x, calculatedRate), true, entries);
+            }
+        }
+        this.currencyGraph.removeAllSeries();
+        this.currencyGraph.getLegendRenderer().setVisible(true);
+        this.currencyGraph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        this.currencyGraph.getGridLabelRenderer().setHorizontalAxisTitle("Days Ago");
+        this.currencyGraph.getViewport().setXAxisBoundsManual(true);
+        this.currencyGraph.getViewport().setMinX(1);
+        this.currencyGraph.getViewport().setMaxX(entries - 1);
+        this.currencyGraph.addSeries(rateSeries);
+    }
+
+    private String getDropdownValue(Spinner dropdown){
+        return dropdown.getSelectedItem().toString().substring(0, 3);
+    }
+
     private void processFormInput() {
         // set our containers to hold ui element data
         String fromCurrency = "";
@@ -171,12 +205,13 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
         String strFromAmount = this.txtFromAmount.getText().toString();
         Log.w("processFormInput", String.valueOf(strFromAmount.length()));
         DecimalFormat decimalFormat = new DecimalFormat();
-        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMaximumFractionDigits(4);
+        CurrencyDao currencyDao = new CurrencyDao();
 
         try {
-            fromCurrency = this.dropFromCurrency.getSelectedItem().toString().substring(0, 3);  // needed to parse out just the currency abbreviation
+            fromCurrency = this.getDropdownValue(this.dropFromCurrency);
             setFlag(this.imgFromFlag, fromCurrency); // change our flag icon
-            toCurrency = this.dropToCurrency.getSelectedItem().toString().substring(0, 3); // same here as above
+            toCurrency = this.getDropdownValue(this.dropToCurrency);
             setFlag(this.imgToFlag, toCurrency);
         } catch (Exception e) {
             Log.e("processFormInput", e.toString(), e);
@@ -194,34 +229,15 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
                 } else if (fromCurrency.equals(toCurrency)) { // make sure the source and destination arent the same
                     this.txtResult.setText(decimalFormat.format(fromAmount));
                 } else {
-                    this.now = System.currentTimeMillis(); // current time in ms
-                    this.ago = now - 10 * DAY_IN_MILLIS; // 10 days ago
-
-                    String strNow = this.formatter.format(new Date(this.now));
-                    String strAgo = this.formatter.format(new Date(this.ago));
-
-                    Log.w("Current Date", strNow);
-                    Log.w("10 days ago", strAgo);
-
-                    WebAPIRequest apiRequest = new WebAPIRequest();
-                    apiRequest.setUrl(fromCurrency, toCurrency);
-                    //TrippeCurrency currency = apiRequest.getLatestAsTrippeCurrency();
-                    double rate = apiRequest.getLatestRate();
-
-                    //TODO WEB API REQUEST/DB QUERY
-                    /*
-                    CurrencyQuery currencyQuery = new CurrencyQuery(getContext(), toCurrency, fromCurrency);
-                    currencyQuery.setSourceAmount(fromAmount);
-                    currencyQuery.getRequestLatest();*/
-
-                    this.txtResult.setText(decimalFormat.format(rate * fromAmount));
-
-                    //LineGraphSeries<DataPoint> updateSeries = new LineGraphSeries<DataPoint>((DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
-                    //this.currencyGraph.addSeries(updateSeries);
-                    //this.series.appendData
-                    //this.series.appendData(currencyQuery.getRequestHistory(strAgo, strNow));
-
-                   // this.series.resetData( (DataPoint[]) currencyQuery.getRequestHistory(strAgo, strNow));
+                        double fromRate = currencyDao.selectCurrencyRate("", fromCurrency);
+                        double toRate = currencyDao.selectCurrencyRate("", toCurrency);
+                        Log.i("processFormInput", "to:" + toRate + " from:" + fromRate);
+                        if (toRate > 0) {
+                            double rate = fromAmount * (1/fromRate) * toRate;
+                            this.txtResult.setText(decimalFormat.format(rate));
+                        } else {
+                            this.txtResult.setText("");
+                        }
                 }
 
             } catch (Exception e) {
@@ -233,7 +249,8 @@ public class CurrencyFragment extends Fragment implements Spinner.OnItemSelected
 
     @Override
     public void onItemSelected(AdapterView<?> aView, View v, int selectedInt, long selectedLong) {
-       processFormInput();
+        this.setCurrencyGraph();
+        this.processFormInput();
 }
 
 

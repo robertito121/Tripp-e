@@ -7,7 +7,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-
+import com.example.trippe.dao.CurrencyDao;
+import com.example.trippe.ui.currency.AsyncRateRequest;
 import com.example.trippe.util.Utility;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,10 +30,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //TODO Remove this and implement a threaded query for web stuff
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
@@ -90,5 +87,8 @@ public class MainActivity extends AppCompatActivity {
         finally {
             trippeDatabase.close();
         }
+        CurrencyDao currencyDao = new CurrencyDao();
+        currencyDao.makeTableRates(true);
+        new AsyncRateRequest().execute(); // execute rate updates via asynchronous web api request
     }
 }

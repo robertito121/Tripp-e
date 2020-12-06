@@ -1,6 +1,8 @@
-package com.example.trippe.ui.currency;
+package com.example.trippe.model;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class TrippeCurrency {
@@ -11,19 +13,19 @@ public class TrippeCurrency {
     private String country;
 
     public TrippeCurrency() {
-
+        this.rates = new HashMap();
     }
 
     public TrippeCurrency(String abbreviation ) {
         this.abbreviation = abbreviation;
+        this.rates = new HashMap();
+
     }
 
     public TrippeCurrency(String abbreviation, String name) {
         this.abbreviation = abbreviation;
         this.name = name;
-    }
-
-    public void sortDates() {
+        this.rates = new HashMap();
 
     }
 
@@ -39,6 +41,22 @@ public class TrippeCurrency {
         return this.country;
     }
 
+    public Iterator<Date> keys() {
+        return this.rates.keySet().iterator();
+    }
+
+    public double getRate(Date date) {
+        double rate = 0;
+        if (rates.containsKey(date)) {
+            return rates.get(date);
+        }
+        return rate;
+    }
+
+    public Integer getSize() {
+        return this.rates.size();
+    }
+
     public long getFlagResourceId(){
         return this.flagResourceid;
     }
@@ -47,7 +65,13 @@ public class TrippeCurrency {
         this.rates.put(date, rate);
     }
 
+    public Map<Date, Double> getRates() {
+        return rates;
+    }
+
     public void setAbbreviation(String abbrev){
         this.abbreviation = abbrev;
     }
+
+
 }
